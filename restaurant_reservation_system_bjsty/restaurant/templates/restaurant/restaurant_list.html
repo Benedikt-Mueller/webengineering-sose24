@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurant List</title>
+</head>
+<body>
+    <h1>Restaurants</h1>
+    <ul>
+        {% for restaurant in restaurants %}
+        <li>
+            <h2>{{ restaurant.name }}</h2>
+            <p>Standort: {{ restaurant.location }}</p>
+            <p>Küche: {{ restaurant.cuisine }}</p>
+            <p>Beschreibung: {{ restaurant.description }}</p>
+            <p>Öffnungszeiten: {{ restaurant.opening_hours }}</p>
+            <p>Kontaktinformationen: {{ restaurant.contact_info }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

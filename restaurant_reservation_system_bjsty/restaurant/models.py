@@ -15,6 +15,8 @@ class UserProfile(models.Model):
         ('marketing', 'Marketing Team Member'),
     )  
     role = models.CharField(max_length=50, choices=ROLE_CHOICES)
+    def __str__(self):
+        return str(self.user)
     
 
 # Restaurant model
@@ -26,6 +28,8 @@ class Restaurant(models.Model):
     description = models.TextField(blank=True)
     opening_hours = models.CharField(max_length=100)
     contact_info = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
 
 # Menu model related to Restaurant
 class Menu(models.Model):
