@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from .models import UserProfile, Restaurant
+from .models import *
 from django import forms
 from django.http import HttpResponse
 
@@ -47,3 +47,13 @@ def login(request):
 def restaurant_list(request):
     restaurants = Restaurant.objects.all()
     return render(request, 'restaurant/restaurant_list.html', {'restaurants': restaurants})
+
+def restaurant_menu(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+    menu_items = Menu.objects.filter(restaurant=restaurant)
+    return render(request, 'restaurant/menu.html', {'restaurant': restaurant, 'menu_items': menu_items})
+
+def view_tables(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+    tables = Table.objects.filter(restaurant=restaurant)
+    return render(request, 'restaurant/tables.html', {'restaurant': restaurant, 'tables': tables})

@@ -38,6 +38,9 @@ class Menu(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     description = models.TextField(blank=True)
 
+    def __str__(self):
+        return (str(self.name)+" bei "+str(self.restaurant) + " für " + str(self.price))
+
 # Reservation model
 class Reservation(models.Model):
     customer = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='reservations')
@@ -74,6 +77,8 @@ class Table(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     capacity = models.IntegerField()
     is_available = models.BooleanField(default=True)
+    def __str__(self):
+        return (str(self.restaurant) + " Tisch: " + str(self.pk))
 
 # Model for managing dining preferences and feedback for trend analysis
 class DiningPreference(models.Model):

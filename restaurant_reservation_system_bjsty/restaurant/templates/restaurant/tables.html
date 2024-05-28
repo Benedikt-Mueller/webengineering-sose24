@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verfügbarkeit von Tischen - {{ restaurant.name }}</title>
+</head>
+<body>
+    <h1>Verfügbarkeit der Tische im {{ restaurant.name }}</h1>
+    <ul>
+        {% for table in tables %}
+        <li>Tischkapazität: {{ table.capacity }} - Verfügbar: {{ table.is_available|yesno:"Ja,Nein" }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ restaurant.name }} Menu</title>
+</head>
+<body>
+    <h1>Menu von {{ restaurant.name }}</h1>
+    <ul>
+        {% for item in menu_items %}
+        <li>{{ item.name }} - {{ item.price }}€
+            <p>{{ item.description }}</p>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
