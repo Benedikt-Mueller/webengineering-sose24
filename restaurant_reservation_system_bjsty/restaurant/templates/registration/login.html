@@ -1,0 +1,9 @@
+{% if form.errors %}
+<p>Ihr Benutzername und Passwort stimmen nicht überein. Bitte versuchen Sie es erneut.</p>
+{% endif %}
+
+<form method="post" action="{% url 'login' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Login</button>
+</form>

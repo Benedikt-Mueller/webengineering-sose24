@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Feedback geben</title>
+</head>
+<body>
+    <h1>Ihr Feedback für {{ restaurant.name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Abschicken</button>
+    </form>
+    <a href="{% url 'restaurant_list' %}">Zurück zur Restaurantliste</a>
+</body>
+</html>

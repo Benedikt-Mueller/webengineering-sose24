@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mein Account</title>
+</head>
+<body>
+    <h1>Mein Account</h1>
+    <p>Willkommen {{user.first_name}} {{user.last_name}}!</p>
+    <h2>Ihre Informationen: </h2>
+    <ul>
+    <li>Vorname: {{user.first_name}}</li>
+    <li>Nachname: {{user.last_name}}</li>
+    <li>Benutzername {{user.username}}</li>
+    <li>E-Mail: {{user.email}}</li>
+    <li>Rolle: {{userprofile.role}}</li>
+    </ul>
+
+    <h2>Ihre bevorzugten Küchen: </h2>
+    <ul>
+    {%for preference in preferences %}
+        <li>{{preference.preferences}}</li>
+    {%empty%}
+        <li>Sie haben keine Vorlieben ausgewählt</li>
+    {%endfor%}
+    </ul>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Reservierung erstellen</title>
+</head>
+<body>
+    <h1>Reservierung bei {{ restaurant.name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Reservierung bestätigen</button>
+    </form>
+    <a href="{% url 'restaurant_list' %}">Zurück zur Restaurantliste</a>
+</body>
+</html>

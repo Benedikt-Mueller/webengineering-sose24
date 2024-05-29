@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Feedback for {{restaurant}}</title>
+</head>
+<body>
+    <h1>Feedback for {{restaurant}}</h1>
+    <ul>
+        {% for feedback in feedbacks %}
+        <li> 
+            <h2>{{feedback.vote}}</h2>
+            <p>Begründung:</p>
+            <p>{{feedback.feedback}}
+            <p>Verfasst von:</p>
+            <p>{{feedback.customer}}
+        </li>
+        {%empty%}
+        <li><p>Noch keine Bewertungen da...</p></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

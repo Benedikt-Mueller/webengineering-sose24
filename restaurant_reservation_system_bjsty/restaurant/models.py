@@ -55,6 +55,9 @@ class Reservation(models.Model):
     )
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
 
+    def __str__(self):
+        return ("Reservation "+str(self.pk)+" at "+str(self.restaurant)+" from "+str(self.customer))
+
 # Review and Rating model
 class Review(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='reviews')
@@ -83,5 +86,30 @@ class Table(models.Model):
 # Model for managing dining preferences and feedback for trend analysis
 class DiningPreference(models.Model):
     customer = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    preferences = models.TextField()
+    PREFERENCE_CHOICES = (
+        ('international' , 'Internationale Küche'),
+        ('german' , 'Deutsche Küche'),
+        ('danish' , 'Dänische Küche'),
+        ('italian' , 'Italienische Küche'),
+        ('american' , 'Amerikanische Küche'),
+        ('indian' , 'Indische Küche'),
+        ('asian' , 'Asiatische Küche'),
+    )
+    preferences = models.CharField(max_length=50, choices=PREFERENCE_CHOICES)
+    def __str__(self):
+        return (str(self.preferences)+ " von " + str(self.customer))
+
+class Feedback(models.Model):
+    customer = models.ForeignKey(UserProfile,on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    VOTE_CHOICES = (
+        ('one_star', '1/5'),
+        ('two_star', '2/5'),
+        ('three_star', '3/5'),
+        ('four_star', '4/5'),
+        ('five_star', '5/5'),
+    )
+    vote = models.CharField(max_length=10, choices=VOTE_CHOICES)
     feedback = models.TextField(blank=True)
+    def __str__(self):
+        return ("Bewertung für " + str(self.restaurant) + " von " + str(self.customer))
