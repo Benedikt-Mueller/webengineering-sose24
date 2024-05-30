@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Rabattangebot erstellen</title>
+</head>
+<body>
+    <h1>Angebot erstellen für {{ restaurant.name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div>
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field }}
+            </div>
+        {% endfor %}
+        <button type="submit">Abschicken</button>
+    </form>
+    <a href="{% url 'restaurant_list' %}">Zurück zur Restaurantliste</a>
+</body>
+</html>

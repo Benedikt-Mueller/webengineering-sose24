@@ -1,60 +1,13 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from .models import *
 from django import forms
 from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+from .forms import *
 import datetime
-
-#Forms:
-class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput())
-    class Meta:
-        model = User
-        fields = ('username', 'email','password','first_name','last_name')
-
-class FeedbackForm(forms.ModelForm):
-    class Meta:
-        model=Feedback
-        fields=('vote','feedback')
-
-class UserProfileForm(forms.ModelForm):
-    class Meta:
-        model = UserProfile
-        fields = ('phone_number','role')
-
-class ReservationForm(forms.ModelForm):
-    date = forms.DateField(required=True, widget=forms.widgets.DateInput(attrs={'type': 'date'}))
-    time = forms.TimeField(required=True, widget=forms.widgets.TimeInput(attrs={'type': 'time'}))
-    class Meta:
-        model = Reservation
-        fields = ['date', 'time', 'party_size', 'special_requests']
-
-    def clean(self):
-        cleaned_data = super().clean()
-        date = cleaned_data.get('date')
-        time = cleaned_data.get('time')
-
-        # Verbinden der Datum- und Zeit-Informationen in ein datetime Objekt
-        if date and time:
-            cleaned_data['date_time'] = datetime.datetime.combine(date, time)
-
-        return cleaned_data
-
-    def save(self, commit=True):
-        # Entfernen Sie 'date' und 'time' aus cleaned_data, da diese nicht im Modell existieren
-        cleaned_data = self.cleaned_data
-        date_time = cleaned_data.pop('date_time', None)
-
-        # Überschreiben des date_time Feldes des Modells mit dem kombinierten Wert
-        instance = super(ReservationForm, self).save(commit=False)
-        if date_time:
-            instance.date_time = date_time
-        if commit:
-            instance.save()
-        return instance
-    
 
 # views:
 def index(request):
@@ -138,3 +91,41 @@ def view_feedback(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
     feedbacks = Feedback.objects.filter(restaurant=restaurant)
     return render(request, 'restaurant/view_feedback.html',({'feedbacks':feedbacks, 'restaurant':restaurant}))
+
+def create_promotion(request,restaurant_id):
+    restaurant = get_object_or_404(Restaurant,pk=restaurant_id)
+    if request.method == 'POST':
+        form = PromotionForm(request.POST)
+        if form.is_valid():
+            promotion = form.save(commit=False)
+            promotion.restaurant=restaurant
+            promotion.save()
+            return redirect('restaurant_list')
+        else:
+            return render(request, 'restaurant/create_promotion.html', {
+                'form': form,
+                'restaurant': restaurant
+            })
+    else:
+        form = PromotionForm
+        return render(request, 'restaurant/create_promotion.html', {'form': form, 'restaurant': restaurant}) 
+    
+@login_required
+def dining_preference(request):
+       user_profile = UserProfile.objects.get(user=request.user)
+
+       if request.method == 'POST':
+           form = DiningPreferenceForm(request.POST)
+           if form.is_valid():
+               selected_preferences = form.cleaned_data['preferences']
+               # Lösche alle bestehenden Präferenzen, um sie durch die neuen Auswahlmöglichkeiten zu ersetzen.
+               user_profile.diningpreference_set.clear()
+               for preference in selected_preferences:
+                   DiningPreference.objects.create(customer=user_profile, preferences=preference.preferences)
+               return redirect('success_url')  # URL nach Erfolg anpassen
+       else:
+           form = DiningPreferenceForm()
+           # Optional: Vorauswahlen basierend auf existierenden Präferenzen des Benutzers
+           form.fields['preferences'].initial = user_profile.diningpreference_set.all()
+
+       return render(request, 'restaurant/manage_preferences.html', {'form': form})
