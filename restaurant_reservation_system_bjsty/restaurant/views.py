@@ -129,3 +129,40 @@ def dining_preference(request):
            form.fields['preferences'].initial = user_profile.diningpreference_set.all()
 
        return render(request, 'restaurant/manage_preferences.html', {'form': form})
+
+# manage_reservation #
+def auto_assign_tables(reservations, tables):
+    for reservation in reservations:
+        if not reservation.table:
+            available_tables = [table for table in tables if table.capacity >= reservation.party_size and not table.reservation_set.filter(date_time__date=reservation.date_time.date()).exists()]
+            if available_tables:
+                reservation.table = available_tables[0]
+                reservation.save()
+
+@login_required
+def manage_reservations(request, restaurant_id, date=None):
+    restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+    date = date or datetime.datetime.strptime(date, "%Y-%m-%d").date() if date else datetime.date.today()
+    reservations = Reservation.objects.filter(restaurant=restaurant, date_time__date=date)
+    tables = Table.objects.filter(restaurant=restaurant)
+
+    if request.method == 'POST':
+        if 'auto_assign' in request.POST:
+            auto_assign_tables(reservations, tables)
+            return redirect('manage_reservations', restaurant_id=restaurant_id, date=date.strftime("%Y-%m-%d"))
+        else:
+            for key, value in request.POST.items():
+                if key.startswith('table-'):
+                    reservation_id = int(key.split('-')[1])
+                    table_id = int(value)
+                    reservation = get_object_or_404(Reservation, pk=reservation_id)
+                    reservation.table = get_object_or_404(Table, pk=table_id)
+                    reservation.save()
+            return redirect('manage_reservations', restaurant_id=restaurant_id, date=date.strftime("%Y-%m-%d"))
+
+    return render(request, 'restaurant/manage_reservations.html', {
+        'restaurant': restaurant,
+        'reservations': reservations,
+        'tables': tables,
+        'selected_date': date
+    })
