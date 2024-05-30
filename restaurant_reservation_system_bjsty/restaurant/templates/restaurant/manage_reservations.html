@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Reservierungen für {{ restaurant.name }} am {{ selected_date }}</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" name="auto_assign">Automatisch Tische zuweisen</button>
+</form>
+
+<form method="post">
+  {% csrf_token %}
+  <table>
+    <tr>
+      <th>Reservierung ID</th>
+      <th>Partygröße</th>
+      <th>Tisch zuweisen</th>
+    </tr>
+    {% for reservation in reservations %}
+    <tr>
+      <td>{{ reservation.id }}</td>
+      <td>{{ reservation.party_size }}</td>
+      <td>
+        <select name="table-{{ reservation.id }}">
+          <option value="">Bitte wählen...</option>
+          {% for table in tables %}
+          <option value="{{ table.id }}" {% if reservation.table.id == table.id %}selected{% endif %}>
+            Tisch {{ table.number }} (Kapazität: {{ table.capacity }})
+          </option>
+          {% endfor %}
+        </select>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <button type="submit">Änderungen speichern</button>
+</form>
+
+{% endblock %}
