@@ -15,6 +15,9 @@ urlpatterns = [
     path('restaurant/<int:restaurant_id>/create_promotion/', views.create_promotion, name='create_promotion'),
     path('restaurant/dining_preference/', views.dining_preference, name='dining_preference'),
     path('auth/', include('django.contrib.auth.urls')),
+    #path(manage_reservation)
+    path('restaurant/<int:restaurant_id>/manage-reservations/', manage_reservations, name='manage_reservations'),
+    path('restaurant/<int:restaurant_id>/manage-reservations/<str:date>/', manage_reservations, name='manage_reservations_by_date'),
     #Not yet used:
     path('profile/', views.profile_view, name='profile_view'),
 ]
