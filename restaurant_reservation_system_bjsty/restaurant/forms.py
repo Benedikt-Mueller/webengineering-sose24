@@ -83,3 +83,10 @@ class DiningPreferenceForm(forms.Form):
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
+ # Suchfunktion   
+class SearchForm(forms.Form):
+    location = forms.CharField(required=False, label='Ort')
+    cuisine = forms.CharField(required=False, label='Küche')
+    capacity = forms.IntegerField(required=False, label='Mindestkapazität', min_value=1)
+
+    # Keine Initialisierungsmethode erforderlich, da wir die Standardfunktionen von Django Forms verwenden.  
