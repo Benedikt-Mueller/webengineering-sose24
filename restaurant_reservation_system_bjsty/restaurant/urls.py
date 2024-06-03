@@ -1,5 +1,8 @@
 from django.urls import path, include
 from . import views 
+from .views import search_restaurants
+from .views import manage_reservations
+
 
 urlpatterns = [ 
     path("", views.index, name="index"),
@@ -18,6 +21,7 @@ urlpatterns = [
     #path(manage_reservation)
     path('restaurant/<int:restaurant_id>/manage-reservations/', manage_reservations, name='manage_reservations'),
     path('restaurant/<int:restaurant_id>/manage-reservations/<str:date>/', manage_reservations, name='manage_reservations_by_date'),
+    path('search/', search_restaurants, name='search_restaurants'),
     #Not yet used:
     path('profile/', views.profile_view, name='profile_view'),
 ]

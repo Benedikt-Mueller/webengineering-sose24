@@ -116,3 +116,12 @@ class Feedback(models.Model):
     feedback = models.TextField(blank=True)
     def __str__(self):
         return ("Bewertung für " + str(self.restaurant) + " von " + str(self.customer))
+# Implementierung der Suchfunktion
+class Restaurant(models.Model):
+    name = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+    cuisine = models.CharField(max_length=100)
+    capacity = models.IntegerField()
+
+    def __str__(self):
+        return self.name  # Gibt den Namen des Restaurants zurück, nützlich für die Admin-Ansicht und Log-Dateien.    

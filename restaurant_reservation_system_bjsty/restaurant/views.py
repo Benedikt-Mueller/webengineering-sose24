@@ -166,3 +166,18 @@ def manage_reservations(request, restaurant_id, date=None):
         'tables': tables,
         'selected_date': date
     })
+#Suchfunktion
+def search_restaurants(request):
+    form = SearchForm(request.GET or None)
+    if form.is_valid():
+        results = Restaurant.objects.all()
+        if form.cleaned_data['location']:
+            results = results.filter(location__icontains=form.cleaned_data['location'])
+        if form.cleaned_data['cuisine']:
+            results = results.filter(cuisine__icontains=form.cleaned_data['cuisine'])
+        if form.cleaned_data['capacity']:
+            results = results.filter(capacity__gte=form.cleaned_data['capacity'])
+    else:
+        results = None
+
+    return render(request, 'restaurant/search.html', {'form': form, 'results': results})

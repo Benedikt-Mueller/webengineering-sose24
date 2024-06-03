@@ -1,0 +1,22 @@
+<!-- templates/restaurant/search.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Suche nach Restaurants</h2>
+<form method="get">
+    {{ form.as_p }}  <!-- Django form rendering as paragraph -->
+    <button type="submit">Suchen</button>
+</form>
+
+{% if results %}
+    <h3>Ergebnisse:</h3>
+    <ul>
+    {% for restaurant in results %}
+        <li>{{ restaurant.name }} - {{ restaurant.location }} - {{ restaurant.cuisine }} - Sitzplätze: {{ restaurant.capacity }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Keine Ergebnisse gefunden.</p>
+{% endif %}
+{% endblock %}
