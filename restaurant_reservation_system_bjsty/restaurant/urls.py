@@ -3,6 +3,7 @@ from . import views
 from .views import search_restaurants
 from .views import manage_reservations
 from .views import release_table
+from .views import adjust_reservation
 
 
 urlpatterns = [ 
@@ -26,6 +27,8 @@ urlpatterns = [
     path('search/', search_restaurants, name='search_restaurants'),
     #path(release_table)
     path('tables/release/<int:table_id>/', release_table, name='release_table'),
+    #Path(adjust_reservation)
+    path('reservations/adjust/<int:reservation_id>/', adjust_reservation, name='adjust_reservation'),
     #Not yet used:
     path('profile/', views.profile_view, name='profile_view'),
 ]

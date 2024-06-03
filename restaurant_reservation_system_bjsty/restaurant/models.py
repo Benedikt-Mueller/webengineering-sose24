@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
+
 
 # Models for User accounts to differentiate between
 class UserProfile(models.Model):
@@ -134,3 +136,12 @@ class Table(models.Model):
     def __str__(self):
         # Gibt eine lesbare Darstellung des Objekts zurück
         return f"Tisch {self.number} - Kapazität {self.capacity}"    
+#Reservierungen anzupassen und Bestätigungs-E-Mails an Kunden und den Besitzer zu senden
+class Reservation(models.Model):
+    table = models.ForeignKey(Table, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    date = models.DateTimeField()
+    is_confirmed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Reservierung für {self.user.email} am {self.date.strftime('%Y-%m-%d %H:%M')}"    

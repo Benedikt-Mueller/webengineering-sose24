@@ -11,6 +11,8 @@ import datetime
 from .models import Table
 from .forms import SearchForm
 from .models import Restaurant
+from .models import Reservation
+from django.core.mail import send_mail
 
 # views:
 def index(request):
@@ -198,3 +200,26 @@ def release_table(request, table_id):
     
     # Zeigt das Bestätigungsformular zum Freigeben des Tisches an
     return render(request, 'restaurant/release_table.html', {'table': table})
+# Reservierung Anpassen und E-Mails an Kunden und Bestzern senden
+@login_required
+def adjust_reservation(request, reservation_id):
+    reservation = get_object_or_404(Reservation, id=reservation_id, user=request.user)
+    
+    if request.method == 'POST':
+        # Update reservation details based on form input
+        reservation.date = request.POST.get('date')
+        reservation.save()
+
+        # Send confirmation emails
+        send_confirmation_email(reservation)
+
+        return redirect('reservation_detail', reservation_id=reservation.id)
+    
+    return render(request, 'restaurant/adjust_reservation.html', {'reservation': reservation})
+
+def send_confirmation_email(reservation):
+    subject = 'Ihre Reservierung wurde angepasst'
+    message = f'Liebe(r) {reservation.user.email}, Ihre Reservierung für den {reservation.date.strftime("%Y-%m-%d %H:%M")} wurde erfolgreich angepasst.'
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = [reservation.user.email, settings.OWNER_EMAIL]
+    send_mail(subject, message, email_from, recipient_list)
