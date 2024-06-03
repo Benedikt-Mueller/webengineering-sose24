@@ -125,3 +125,12 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return self.name  # Gibt den Namen des Restaurants zurück, nützlich für die Admin-Ansicht und Log-Dateien.    
+# Tisch Freigabe
+class Table(models.Model):
+    number = models.IntegerField(unique=True)
+    capacity = models.IntegerField()
+    is_reserved = models.BooleanField(default=False)
+
+    def __str__(self):
+        # Gibt eine lesbare Darstellung des Objekts zurück
+        return f"Tisch {self.number} - Kapazität {self.capacity}"    

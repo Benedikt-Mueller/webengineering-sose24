@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Tisch freigeben: {{ table.number }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <p>Sind Sie sicher, dass Sie diesen Tisch freigeben möchten?</p>
+    <button type="submit">Tisch freigeben</button>
+</form>
+{% endblock %}

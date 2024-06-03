@@ -2,6 +2,7 @@ from django.urls import path, include
 from . import views 
 from .views import search_restaurants
 from .views import manage_reservations
+from .views import release_table
 
 
 urlpatterns = [ 
@@ -21,7 +22,10 @@ urlpatterns = [
     #path(manage_reservation)
     path('restaurant/<int:restaurant_id>/manage-reservations/', manage_reservations, name='manage_reservations'),
     path('restaurant/<int:restaurant_id>/manage-reservations/<str:date>/', manage_reservations, name='manage_reservations_by_date'),
+    #Path(search_restaurants)
     path('search/', search_restaurants, name='search_restaurants'),
+    #path(release_table)
+    path('tables/release/<int:table_id>/', release_table, name='release_table'),
     #Not yet used:
     path('profile/', views.profile_view, name='profile_view'),
 ]

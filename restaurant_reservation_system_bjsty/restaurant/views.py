@@ -8,6 +8,9 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .forms import *
 import datetime
+from .models import Table
+from .forms import SearchForm
+from .models import Restaurant
 
 # views:
 def index(request):
@@ -181,3 +184,17 @@ def search_restaurants(request):
         results = None
 
     return render(request, 'restaurant/search.html', {'form': form, 'results': results})
+# Tisch Freigabe
+@login_required  # Sicherstellen, dass nur eingeloggte Benutzer Zugriff haben
+def release_table(request, table_id):
+    # Holt den Tisch oder zeigt eine 404-Seite, falls nicht gefunden
+    table = get_object_or_404(Table, id=table_id)
+    
+    if request.method == 'POST':
+        # Setzt den Tisch auf nicht reserviert und speichert die Änderung
+        table.is_reserved = False
+        table.save()
+        return redirect('tables_list')  # Leitet den Benutzer auf die Übersichtsseite der Tische um
+    
+    # Zeigt das Bestätigungsformular zum Freigeben des Tisches an
+    return render(request, 'restaurant/release_table.html', {'table': table})
