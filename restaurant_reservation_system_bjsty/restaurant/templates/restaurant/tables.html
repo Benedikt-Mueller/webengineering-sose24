@@ -7,7 +7,7 @@
     <h1>Verfügbarkeit der Tische im {{ restaurant.name }}</h1>
     <ul>
         {% for table in tables %}
-        <li>Tischkapazität: {{ table.capacity }} - Verfügbar: {{ table.is_available|yesno:"Ja,Nein" }}</li>
+        <li>Tischkapazität: {{ table.capacity }} - Verfügbar: {{ table.is_reserved|yesno:"Nein,Ja" }}</li>
         {% endfor %}
     </ul>
 </body>

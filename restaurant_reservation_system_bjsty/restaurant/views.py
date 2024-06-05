@@ -7,12 +7,10 @@ from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .forms import *
-import datetime
-from .models import Table
-from .forms import SearchForm
-from .models import Restaurant
-from .models import Reservation
+from django.utils import timezone
 from django.core.mail import send_mail
+from zoneinfo import ZoneInfo
+
 
 # views:
 def index(request):
@@ -144,11 +142,15 @@ def auto_assign_tables(reservations, tables):
                 reservation.table = available_tables[0]
                 reservation.save()
 
+
 @login_required
 def manage_reservations(request, restaurant_id, date=None):
     restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
-    date = date or datetime.datetime.strptime(date, "%Y-%m-%d").date() if date else datetime.date.today()
-    reservations = Reservation.objects.filter(restaurant=restaurant, date_time__date=date)
+    if(date == None):
+        request_date =  timezone.now().date()
+    else:
+        request_date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+    reservations = Reservation.objects.filter(restaurant=restaurant, date_time__date=request_date)
     tables = Table.objects.filter(restaurant=restaurant)
 
     if request.method == 'POST':
@@ -169,7 +171,7 @@ def manage_reservations(request, restaurant_id, date=None):
         'restaurant': restaurant,
         'reservations': reservations,
         'tables': tables,
-        'selected_date': date
+        'selected_date': request_date
     })
 #Suchfunktion
 def search_restaurants(request):
@@ -185,7 +187,6 @@ def search_restaurants(request):
     else:
         results = None
 
-    return render(request, 'restaurant/search.html', {'form': form, 'results': results})
 # Tisch Freigabe
 @login_required  # Sicherstellen, dass nur eingeloggte Benutzer Zugriff haben
 def release_table(request, table_id):
@@ -200,6 +201,7 @@ def release_table(request, table_id):
     
     # Zeigt das Bestätigungsformular zum Freigeben des Tisches an
     return render(request, 'restaurant/release_table.html', {'table': table})
+
 # Reservierung Anpassen und E-Mails an Kunden und Bestzern senden
 @login_required
 def adjust_reservation(request, reservation_id):
