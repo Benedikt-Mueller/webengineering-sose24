@@ -211,7 +211,10 @@ def adjust_reservation(request, reservation_id):
     if request.method == 'POST':
         form = ReservationForm(request.POST, instance=reservation)
         if form.is_valid():
-            form.save()
+            temp_reservation = form.save(commit=False)
+            # Setzt den Status auf "Pending"
+            temp_reservation.status = 'pending'  
+            temp_reservation.save()
             send_confirmation_email(reservation)
             return redirect('view_reservation', reservation_id=reservation.id)
     else:
@@ -239,10 +242,17 @@ def view_reservation(request,reservation_id):
     form = ReservationForm(instance=reservation,initial=initial_data)
     return render(request,"restaurant/view_reservation.html", {"form":form})
 
+@login_required
+def my_reservations(request):
+    current_customer = get_object_or_404(UserProfile, user = request.user)
+    reservations = Reservation.objects.filter(customer=current_customer).order_by('-date_time')  # Die neueste zuerst
+    return render(request, 'restaurant/my_reservations.html', {'reservations': reservations})
+
 
 def send_confirmation_email(reservation):
     subject = 'Ihre Reservierung wurde angepasst'
     message = f'Liebe(r) {reservation.customer.user.email}, Ihre Reservierung für den {reservation.date_time.strftime("%Y-%m-%d %H:%M")} wurde erfolgreich angepasst.'
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [reservation.customer.user.email, settings.OWNER_EMAIL]
+    #Die folgende Zeile muss auskommentiert werden, damit auch tatsächlich eine Mail gesendet wird. Dafür brauchen wir aber einen entsprechenden Provider (Mailserver hätte ich, Konfiguration hat aber erstmal keine Priorität)
     #send_mail(subject, message, email_from, recipient_list)

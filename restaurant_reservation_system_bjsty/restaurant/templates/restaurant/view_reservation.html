@@ -1,9 +1,9 @@
 {%extends "restaurant/base.html"%}
 {% block content %}
-<h2>Reservierung anpassen</h2>
+<h2>Reservierung ansehen</h2>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}  <!-- Hier renderst du das Formular automatisch -->
-    <button type="submit">Reservierung anpassen</button>
+    <a href="{% url 'my_reservations' %}" class="btn btn-primary">Zurück zur Übersicht</a><br>
 </form>
 {% endblock %}

@@ -23,6 +23,7 @@ urlpatterns = [
     path('tables/release/<int:table_id>/', views.release_table, name='release_table'),
     path('reservations/adjust/<int:reservation_id>/', views.adjust_reservation, name='adjust_reservation'),
     path('reservations/view_reservation/<int:reservation_id>/', views.view_reservation, name='view_reservation'),
+    path('my_reservations/', views.my_reservations, name='my_reservations'),
     #Not yet used:
     path('profile/', views.profile_view, name='profile_view'),
 ]

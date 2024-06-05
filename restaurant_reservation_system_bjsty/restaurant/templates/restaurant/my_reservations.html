@@ -1,0 +1,27 @@
+{% extends 'restaurant/base.html' %} 
+
+{% block content %}
+<h2>Ihre Reservierungen</h2>
+
+<p>Sollten Sie die Reservierung per Telefon ändern wollen, geben Sie bitte ihre Reservierungsnummer mit an!</p>
+
+{% if reservations %}
+    <ul>
+    {% for reservation in reservations %}
+        <li>
+            <h3>Reservierung Nummer {{reservation.id}}</h3>
+            <p>Datum: {{ reservation.date_time|date:"d M Y H:i" }} </p>
+            <p>Restaurant: {{ reservation.restaurant.name }} </p>
+            <p>Anzahl Personen: {{ reservation.party_size }}</p>
+            <p>Status: {{ reservation.status }}</p>
+            <!-- Links -->
+            <a href="{% url 'view_reservation' reservation.id %}" class="btn btn-primary">Reservierung ansehen</a> 
+            <a href="{% url 'adjust_reservation' reservation.id %}" class="btn btn-primary">Reservierung ändern</a><br>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Sie haben noch keine Reservierungen.</p>
+{% endif %}
+
+{% endblock %}

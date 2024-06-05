@@ -1,7 +1,7 @@
 {% extends 'restaurant/base.html' %}
-
 {% block content %}
 <h2>Reservierung ändern</h2>
+<p>Wenn Sie ihre Reservierung ändern, muss diese erneut bestätigt werden!</p>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}  <!-- Hier renderst du das Formular automatisch -->
