@@ -14,7 +14,7 @@ from zoneinfo import ZoneInfo
 
 # views:
 def index(request):
-    return HttpResponse("Guten Tag. Sie befinden sich auf der Hauptseite dieses Restaurant-Reservierungssystems!")
+    return redirect(restaurant_list)
 
 def createUser(request):
     if request.method == 'POST':
