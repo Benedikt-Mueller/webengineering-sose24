@@ -125,3 +125,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #Standardseite bei Anmeldung:
 LOGIN_REDIRECT_URL = '/restaurant/profile'
+
+#Standard-E-Mail Adressen:
+OWNER_EMAIL = "bjesty@m3rk.eu"
+#Passwort: R3st4ur4ntSystem9476

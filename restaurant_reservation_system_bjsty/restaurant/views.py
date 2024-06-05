@@ -205,23 +205,44 @@ def release_table(request, table_id):
 # Reservierung Anpassen und E-Mails an Kunden und Bestzern senden
 @login_required
 def adjust_reservation(request, reservation_id):
-    reservation = get_object_or_404(Reservation, id=reservation_id, user=request.user)
+    currentCustomer = get_object_or_404(UserProfile, user=request.user)
+    reservation = get_object_or_404(Reservation, id=reservation_id, customer=currentCustomer)
     
     if request.method == 'POST':
-        # Update reservation details based on form input
-        reservation.date = request.POST.get('date')
-        reservation.save()
+        form = ReservationForm(request.POST, instance=reservation)
+        if form.is_valid():
+            form.save()
+            send_confirmation_email(reservation)
+            return redirect('view_reservation', reservation_id=reservation.id)
+    else:
+        # Ausgeben der Form, als Standardwerte wird die Instanz, also die ausgewählt Reservierung, angegeben. Die Werte müssen allerdings seperat initialisiert werden, da im Model nur ein DateTime Field existiert, die Form aber seperate Felder hat
+        initial_data = {
+            'date': reservation.date_time.date(),
+            'time': reservation.date_time.time(),
+            'party_size': reservation.party_size,
+            'special_requests': reservation.special_requests,
+            # Füge weitere Felder hinzu, falls nötig
+        }
+        form = ReservationForm(instance=reservation,initial=initial_data)
 
-        # Send confirmation emails
-        send_confirmation_email(reservation)
+    return render(request, 'restaurant/adjust_reservation.html', {'form': form})
 
-        return redirect('reservation_detail', reservation_id=reservation.id)
-    
-    return render(request, 'restaurant/adjust_reservation.html', {'reservation': reservation})
+def view_reservation(request,reservation_id):
+    reservation = get_object_or_404(Reservation, pk=reservation_id)
+    initial_data = {
+            'date': reservation.date_time.date(),
+            'time': reservation.date_time.time(),
+            'party_size': reservation.party_size,
+            'special_requests': reservation.special_requests,
+            # Füge weitere Felder hinzu, falls nötig
+        }
+    form = ReservationForm(instance=reservation,initial=initial_data)
+    return render(request,"restaurant/view_reservation.html", {"form":form})
+
 
 def send_confirmation_email(reservation):
     subject = 'Ihre Reservierung wurde angepasst'
-    message = f'Liebe(r) {reservation.user.email}, Ihre Reservierung für den {reservation.date.strftime("%Y-%m-%d %H:%M")} wurde erfolgreich angepasst.'
+    message = f'Liebe(r) {reservation.customer.user.email}, Ihre Reservierung für den {reservation.date_time.strftime("%Y-%m-%d %H:%M")} wurde erfolgreich angepasst.'
     email_from = settings.EMAIL_HOST_USER
-    recipient_list = [reservation.user.email, settings.OWNER_EMAIL]
-    send_mail(subject, message, email_from, recipient_list)
+    recipient_list = [reservation.customer.user.email, settings.OWNER_EMAIL]
+    #send_mail(subject, message, email_from, recipient_list)

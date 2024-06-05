@@ -1,11 +1,10 @@
-{% extends 'base.html' %}
+{% extends 'restaurant/base.html' %}
 
 {% block content %}
-<h2>Reservierung anpassen</h2>
+<h2>Reservierung ändern</h2>
 <form method="post">
     {% csrf_token %}
-    <label for="date">Datum und Zeit:</label>
-    <input type="datetime-local" id="date" name="date" value="{{ reservation.date|date:'Y-m-d\TH:i' }}" required>
-    <button type="submit">Reservierung anpassen</button>
+    {{ form.as_p }}  <!-- Hier renderst du das Formular automatisch -->
+    <button type="submit">Reservierung ändern</button>
 </form>
 {% endblock %}
