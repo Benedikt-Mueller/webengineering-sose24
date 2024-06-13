@@ -174,6 +174,7 @@ def manage_reservations(request, restaurant_id, date=None):
         'selected_date': request_date
     })
 #Suchfunktion
+""""
 def search_restaurants(request):
     form = SearchForm(request.GET or None)
     if form.is_valid():
@@ -186,6 +187,20 @@ def search_restaurants(request):
             results = results.filter(capacity__gte=form.cleaned_data['capacity'])
     else:
         results = None
+"""
+
+def search_restaurants(request):
+    form = SearchForm(request.GET or None)
+    results = None
+    if form.is_valid():
+        results = Restaurant.objects.all()
+        if form.cleaned_data['location']:
+            results = results.filter(location__icontains=form.cleaned_data['location'])
+        if form.cleaned_data['cuisine']:
+            results = results.filter(cuisine__icontains=form.cleaned_data['cuisine'])
+        if form.cleaned_data['capacity']:
+            results = results.filter(capacity__gte=form.cleaned_data['capacity'])
+    return render(request, 'restaurant/search.html', {'form': form, 'results': results})
 
 # Tisch Freigabe
 @login_required  # Sicherstellen, dass nur eingeloggte Benutzer Zugriff haben

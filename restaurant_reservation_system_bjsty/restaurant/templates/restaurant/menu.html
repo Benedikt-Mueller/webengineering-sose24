@@ -1,16 +1,92 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html> -->
 <html>
 <head>
     <title>{{ restaurant.name }} Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        li p {
+            margin: 10px 0 0;
+            color: #777;
+        }
+        .price {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+    <script>
+        function filterMenu() {
+            var input = document.getElementById("searchInput");
+            var filter = input.value.toLowerCase();
+            var items = document.getElementsByTagName("li");
+
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var name = item.getElementsByClassName("price")[0].textContent.toLowerCase();
+                if (name.indexOf(filter) > -1) {
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            }
+        }
+    </script>
 </head>
 <body>
     <h1>Menu von {{ restaurant.name }}</h1>
+    <input type="text" id="searchInput" onkeyup="filterMenu()" placeholder="Suche...">
+ 
     <ul>
         {% for item in menu_items %}
-        <li>{{ item.name }} - {{ item.price }}€
+        <li>
+            <div class="price">{{ item.name }} - {{ item.price }}€</div>
             <p>{{ item.description }}</p>
         </li>
         {% endfor %}
+        <li>
+            <div class="price">Pasta Primavera - 7,50€</div>
+            <p>Penne-Nudeln mit saisonalem Gemüse, Knoblauch und Parmesan</p>
+        </li>
+        <li>
+            <div class="price">Chicken Tikka Masala - 8,50€</div>
+            <p>Gegrillte Hähnchenstreifen in einer cremigen Tomaten-Curry-Sauce, serviert mit Reis</p>
+        </li>
+        <li>
+            <div class="price">Vegetarische Frühlingsrollen - 5,00€</div>
+            <p>Knusprige Frühlingsrollen gefüllt mit Gemüse, serviert mit süß-saurem Dip</p>
+        </li>
+        <li>
+            <div class="price">Griechischer Salat - 6,50€</div>
+            <p>Blattsalat mit Tomaten, Gurken, Paprika, Zwiebeln, Oliven und Feta-Käse</p>
+        </li>
+        <li>
+            <div class="price">Wiener Schnitzel - 9,00€</div>
+            <p>Paniertes Schnitzel vom Kalb, serviert mit Pommes frites und Preiselbeeren</p>
+        </li>
     </ul>
 </body>
 </html>

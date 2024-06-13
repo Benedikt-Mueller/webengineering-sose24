@@ -1,11 +1,11 @@
-<!-- templates/restaurant/search.html -->
+<!-- templates/restaurant/search.html 
 
 {% extends 'base.html' %}
 
 {% block content %}
 <h2>Suche nach Restaurants</h2>
 <form method="get">
-    {{ form.as_p }}  <!-- Django form rendering as paragraph -->
+    {{ form.as_p }}  Django form rendering as paragraph 
     <button type="submit">Suchen</button>
 </form>
 
@@ -19,4 +19,61 @@
 {% else %}
     <p>Keine Ergebnisse gefunden.</p>
 {% endif %}
+{% endblock %}  
+-->
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="search-box">
+        <h2>Finden Sie das perfekte Restaurant</h2>
+        <form method="get">
+            <div class="form-group">
+                <label for="id_location">Ort:</label>
+                {{ form.location }}
+            </div>
+            <div class="form-group">
+                <label for="id_cuisine">Küche:</label>
+                {{ form.cuisine }}
+            </div>
+            <div class="form-group">
+                <label for="id_capacity">Mindestkapazität:</label>
+                {{ form.capacity }}
+            </div>
+            <button type="submit" class="btn btn-primary">Suchen</button>
+        </form>
+    </div>
+    <div class="search-results">
+        {% if results %}
+        <h3>Suchergebnisse:</h3>
+        <div class="row">
+            {% for restaurant in results %}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="restaurant_image.jpg" class="card-img-top" alt="{{ restaurant.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ restaurant.name }}</h5>
+                        <p class="card-text">
+                            <strong>Ort:</strong> {{ restaurant.location }}<br>
+                            <strong>Küche:</strong> {{ restaurant.cuisine }}<br>
+                            <strong>Sitzplätze:</strong> {{ restaurant.capacity }}
+                        </p>
+                        <a href="#" class="btn btn-secondary">Details anzeigen</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p>Keine Ergebnisse gefunden.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* CSS-Stile */
+</style>
 {% endblock %}
