@@ -1,4 +1,4 @@
-<!-- <!DOCTYPE html> -->
+<!DOCTYPE html>
 <html>
 <head>
     <title>{{ restaurant.name }} Menu</title>
@@ -7,35 +7,45 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f8f9fa;
+            background-color: #1a1a1a;
+            color: #f0f0f0;
         }
         h1 {
-            color: #333;
+            color: #ffffff;
             text-align: center;
             margin-bottom: 30px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #333333;
+            color: #f0f0f0;
+            border: none;
+            border-radius: 5px;
         }
         ul {
             list-style-type: none;
             padding: 0;
         }
         li {
-            background-color: #fff;
+            background-color: #333333;
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         li:hover {
             transform: translateY(-5px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
         li p {
             margin: 10px 0 0;
-            color: #777;
+            color: #cccccc;
         }
         .price {
             font-weight: bold;
-            color: #333;
+            color: #00b8d4;
         }
     </style>
     <script>
@@ -43,7 +53,6 @@
             var input = document.getElementById("searchInput");
             var filter = input.value.toLowerCase();
             var items = document.getElementsByTagName("li");
-
             for (var i = 0; i < items.length; i++) {
                 var item = items[i];
                 var name = item.getElementsByClassName("price")[0].textContent.toLowerCase();
@@ -59,7 +68,6 @@
 <body>
     <h1>Menu von {{ restaurant.name }}</h1>
     <input type="text" id="searchInput" onkeyup="filterMenu()" placeholder="Suche...">
- 
     <ul>
         {% for item in menu_items %}
         <li>
