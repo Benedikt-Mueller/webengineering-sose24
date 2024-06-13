@@ -38,6 +38,21 @@
         h2 {
             color: #ffffff;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2 a {
+            margin-right: 10px;
+        }
+        
+        .menu-label {
+            background-color: #00b8d4;
+            color: #ffffff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-left: 10px;
         }
         
         a {
@@ -59,7 +74,10 @@
     <ul>
         {% for restaurant in restaurants %}
         <li>
-            <h2><a href="{% url 'restaurant_menu' restaurant.id %}">{{ restaurant.name }}</a></h2>
+            <h2>
+                <a href="{% url 'restaurant_menu' restaurant.id %}">{{ restaurant.name }}</a>
+                <span class="menu-label">Menü</span>
+            </h2>
             <p>Standort: {{ restaurant.location }}</p>
             <p>Küche: {{ restaurant.cuisine }}</p>
             <p>Beschreibung: {{ restaurant.description }}</p>
