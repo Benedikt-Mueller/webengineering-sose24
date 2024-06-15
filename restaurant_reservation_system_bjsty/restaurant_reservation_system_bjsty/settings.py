@@ -126,6 +126,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #Standardseite bei Anmeldung:
 LOGIN_REDIRECT_URL = '/restaurant/profile'
 
-#Standard-E-Mail Adressen:
-OWNER_EMAIL = "bjesty@m3rk.eu"
+#Mail:
+OWNER_EMAIL = 'bjesty@m3rk.eu'
+DEFAULT_FROM_EMAIL = 'bjesty@m3rk.eu'
+EMAIL_BACKEND = 'restaurant_reservation_system_bjsty.email_backend.MyCustomEmailBackend'
+EMAIL_HOST = 'mail.m3rk.eu'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 #Passwort: R3st4ur4ntSystem9476
+EMAIL_HOST_PASSWORD = 'R3st4ur4ntSystem9476'
