@@ -128,11 +128,12 @@ LOGIN_REDIRECT_URL = '/restaurant/profile'
 
 #Mail:
 OWNER_EMAIL = 'bjesty@m3rk.eu'
+EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'bjesty@m3rk.eu'
 EMAIL_BACKEND = 'restaurant_reservation_system_bjsty.email_backend.MyCustomEmailBackend'
 EMAIL_HOST = 'mail.m3rk.eu'
+EMAIL_HOST_USER = 'bjesty@m3rk.eu'
 EMAIL_PORT = 587
-EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 #Passwort: R3st4ur4ntSystem9476
 EMAIL_HOST_PASSWORD = 'R3st4ur4ntSystem9476'
