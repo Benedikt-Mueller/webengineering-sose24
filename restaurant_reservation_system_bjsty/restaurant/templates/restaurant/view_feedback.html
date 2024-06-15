@@ -2,21 +2,71 @@
 <html>
 <head>
     <title>Feedback for {{restaurant}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+        }
+        h1 {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #333333;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        h2 {
+            color: #00b8d4;
+            margin-top: 0;
+        }
+        p {
+            margin: 10px 0;
+            color: #cccccc;
+        }
+        .author {
+            font-style: italic;
+            color: #999999;
+        }
+        .no-feedback {
+            text-align: center;
+            color: #999999;
+        }
+    </style>
 </head>
 <body>
     <h1>Feedback for {{restaurant}}</h1>
     <ul>
         {% for feedback in feedbacks %}
-        <li> 
+        <li>
             <h2>{{feedback.vote}}</h2>
             <p>Begründung:</p>
-            <p>{{feedback.feedback}}
-            <p>Verfasst von:</p>
-            <p>{{feedback.customer}}
+            <p>{{feedback.feedback}}</p>
+            <p class="author">Verfasst von: {{feedback.customer}}</p>
         </li>
-        {%empty%}
-        <li><p>Noch keine Bewertungen da...</p></li>
+        {% empty %}
+        <li class="no-feedback"><p>Noch keine Bewertungen da...</p></li>
         {% endfor %}
+        <li>
+            <h2>4 Sterne</h2>
+            <p>Begründung:</p>
+            <p>Das Essen war ein Gedicht</p>
+            <p class="author">Verfasst von: John Geiken (johngeiken@outlook.com)</p>
+        </li>
     </ul>
 </body>
 </html>

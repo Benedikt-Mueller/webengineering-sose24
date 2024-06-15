@@ -1,13 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Prüfen Sie die Verfügbarkeit von Tischen in {{ restaurant.name }}">
     <title>Verfügbarkeit von Tischen - {{ restaurant.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+        }
+        h1 {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #333333;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .table-info {
+            flex-grow: 1;
+        }
+        .availability {
+            font-weight: bold;
+            color: #00b8d4;
+            text-align: right;
+        }
+        .available {
+            color: #00e676;
+        }
+        .reserved {
+            color: #ff1744;
+        }
+    </style>
 </head>
 <body>
     <h1>Verfügbarkeit der Tische im {{ restaurant.name }}</h1>
     <ul>
         {% for table in tables %}
-        <li>Tischkapazität: {{ table.capacity }} - Verfügbar: {{ table.is_reserved|yesno:"Nein,Ja" }}</li>
+        <li>
+            <div class="table-info">
+                <span>Tischnummer: {{ table.number }}</span><br>
+                <span>Kapazität: {{ table.capacity }}</span><br>
+                <span>Standort: {{ table.location }}</span>
+            </div>
+            <div class="availability">
+                {% if table.is_reserved %}
+                    <span class="reserved" aria-label="Reserviert">Reserviert</span>
+                {% else %}
+                    <span class="available" aria-label="Verfügbar">Verfügbar</span>
+                {% endif %}
+            </div>
+        </li>
         {% endfor %}
     </ul>
 </body>

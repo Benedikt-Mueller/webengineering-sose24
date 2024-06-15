@@ -2,13 +2,82 @@
 <html>
 <head>
     <title>Restaurant List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #1a1a1a;
+            color: #f0f0f0;
+        }
+        
+        h1 {
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        li {
+            background-color: #333333;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        h2 {
+            color: #ffffff;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2 a {
+            margin-right: 10px;
+        }
+        
+        .menu-label {
+            background-color: #00b8d4;
+            color: #ffffff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        
+        a {
+            color: #00b8d4;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        p {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>Restaurants</h1>
     <ul>
         {% for restaurant in restaurants %}
         <li>
-            <h2><a href="{% url 'restaurant_menu' restaurant.id %}">{{ restaurant.name }}</a></h2>
+            <h2>
+                <a href="{% url 'restaurant_menu' restaurant.id %}">{{ restaurant.name }}</a>
+                <span class="menu-label">Menü</span>
+            </h2>
             <p>Standort: {{ restaurant.location }}</p>
             <p>Küche: {{ restaurant.cuisine }}</p>
             <p>Beschreibung: {{ restaurant.description }}</p>
