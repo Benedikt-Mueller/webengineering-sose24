@@ -270,4 +270,4 @@ def send_confirmation_email(reservation):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [reservation.customer.user.email, settings.OWNER_EMAIL]
     #Die folgende Zeile muss auskommentiert werden, damit auch tatsächlich eine Mail gesendet wird. Dafür brauchen wir aber einen entsprechenden Provider (Mailserver hätte ich, Konfiguration hat aber erstmal keine Priorität)
-    #send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, email_from, recipient_list)
