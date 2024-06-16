@@ -24,6 +24,7 @@ urlpatterns = [
     path('reservations/adjust/<int:reservation_id>/', views.adjust_reservation, name='adjust_reservation'),
     path('reservations/view_reservation/<int:reservation_id>/', views.view_reservation, name='view_reservation'),
     path('my_reservations/', views.my_reservations, name='my_reservations'),
+    path('restaurant/<int:restaurant_id>/change_restaurant/', views.change_restaurant, name='change_restaurant'),
     #Not yet used:
     path('profile/', views.profile_view, name='profile_view'),
 ]

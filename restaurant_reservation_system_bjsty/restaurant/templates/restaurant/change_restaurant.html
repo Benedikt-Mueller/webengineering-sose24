@@ -1,0 +1,10 @@
+{% extends 'restaurant/base.html' %}
+
+{% block content %}
+  <h2>Restaurant-Informationen bearbeiten</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Änderungen speichern">
+  </form>
+{% endblock %}

@@ -271,3 +271,16 @@ def send_confirmation_email(reservation):
     recipient_list = [reservation.customer.user.email, settings.OWNER_EMAIL]
     #Die folgende Zeile muss auskommentiert werden, damit auch tatsächlich eine Mail gesendet wird. Dafür brauchen wir aber einen entsprechenden Provider (Mailserver hätte ich, Konfiguration hat aber erstmal keine Priorität)
     send_mail(subject, message, email_from, recipient_list)
+
+@login_required
+def change_restaurant(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id, owner__user=request.user)
+    if request.method == 'POST':
+        form = RestaurantForm(request.POST, instance=restaurant)
+        if form.is_valid():
+            form.save()
+            # Weiterleitung, z.B. zurück zur Restaurantübersicht
+            return redirect('restaurant/restaurants')
+    else:
+        form = RestaurantForm(instance=restaurant)
+    return render(request, 'restaurant/change_restaurant.html', {'form': form})

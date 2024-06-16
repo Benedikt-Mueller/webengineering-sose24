@@ -90,3 +90,12 @@ class SearchForm(forms.Form):
     capacity = forms.IntegerField(required=False, label='Mindestkapazität', min_value=1)
 
     # Keine Initialisierungsmethode erforderlich, da wir die Standardfunktionen von Django Forms verwenden.  
+
+class RestaurantForm(forms.ModelForm):
+    class Meta:
+        model = Restaurant
+        fields = ['name', 'location', 'cuisine', 'opening_hours', 'capacity', 'description']
+        # Optional: Fügen Sie widgets hinzu, um die Formularfelder anzupassen
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+        }
