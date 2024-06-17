@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRe
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from .models import *
-from django import forms
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.urls import reverse
 from .forms import *
+from django.forms import modelformset_factory
 from django.utils import timezone
 from django.core.mail import send_mail
 from zoneinfo import ZoneInfo
@@ -275,12 +276,32 @@ def send_confirmation_email(reservation):
 @login_required
 def change_restaurant(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id, owner__user=request.user)
+    # Erstellt ein Formset für Restaurantbilder
+    ImageFormSet = modelformset_factory(RestaurantImage, form=RestaurantImageForm, extra=3)
     if request.method == 'POST':
         form = RestaurantForm(request.POST, instance=restaurant)
-        if form.is_valid():
+        formset = ImageFormSet(request.POST, request.FILES, queryset=RestaurantImage.objects.none())
+        if form.is_valid() and formset.is_valid():
             form.save()
+            # Durch die formset.valid() bereits bestätigte Bilder gehen
+            for image_form in formset.cleaned_data:
+                if image_form:
+                    image = image_form['image']
+                    photo = RestaurantImage(restaurant=restaurant, image=image)
+                    photo.save()
             # Weiterleitung, z.B. zurück zur Restaurantübersicht
             return redirect('restaurant/restaurants')
     else:
         form = RestaurantForm(instance=restaurant)
-    return render(request, 'restaurant/change_restaurant.html', {'form': form})
+        formset = ImageFormSet(queryset=RestaurantImage.objects.none())
+    return render(request, 'restaurant/change_restaurant.html', {'form': form, 'formset': formset, 'restaurant' : restaurant})
+@require_POST
+@login_required
+def upload_images(request, restaurant_id):
+    restaurant = get_object_or_404(Restaurant, id=restaurant_id)
+    images = request.FILES.getlist('images')
+    for image in images:
+        RestaurantImage.objects.create(restaurant=restaurant, image=image)
+
+    return JsonResponse({'message': 'Bilder wurden erfolgreich hochgeladen!'})
+

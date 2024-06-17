@@ -2,9 +2,42 @@
 
 {% block content %}
   <h2>Restaurant-Informationen bearbeiten</h2>
-  <form method="post">
+  <form method="post" enctype="multipart/form-data" id="restaurantForm">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Änderungen speichern">
+    <button type="submit">Änderungen speichern</button>
   </form>
+
+  <h3>Bilder hochladen</h3>
+  <input type="file" name="images" id="images" multiple>
+  <button type="button" onclick="uploadImages()">Bilder hochladen</button>
+  <div id="uploadStatus"></div>
+
+  <script type="text/javascript">
+    var restaurantId = '{{ restaurant.id }}'; // Django-Template-Variable in JavaScript-Variable übertragen
+
+    function uploadImages() {
+        var formData = new FormData();
+        var images = document.querySelector('#images').files;
+        var csrfToken = '{{ csrf_token }}'; // Django CSRF-Token direkt einfügen
+        formData.append('csrfmiddlewaretoken', csrfToken);
+        for (var i = 0; i < images.length; i++) {
+            formData.append('images', images[i]);
+        }
+
+        fetch(`/restaurant/restaurant/${restaurantId}/upload_images/`, { // Verwendung der Restaurant-ID in der URL
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("uploadStatus").innerHTML = "Upload erfolgreich!";
+            // Abschlussaktionen hier
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            document.getElementById("uploadStatus").innerHTML = "Fehler beim Upload.";
+        });
+    }
+  </script>
 {% endblock %}

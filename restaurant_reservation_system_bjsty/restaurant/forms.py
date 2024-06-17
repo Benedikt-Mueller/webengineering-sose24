@@ -99,3 +99,11 @@ class RestaurantForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
         }
+
+class RestaurantImageForm(forms.ModelForm):
+    class Meta:
+        model = RestaurantImage
+        fields = ['image']
+        widgets = {
+            'image': forms.FileInput,
+        }
