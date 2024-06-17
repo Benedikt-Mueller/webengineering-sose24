@@ -66,7 +66,7 @@
     </script>
 </head>
 <body>
-    <h1>Menu von {{ restaurant.name }}</h1>
+    <h1>Speisekarte für <a href="{% url 'restaurant_detail' restaurant.id %}">{{ restaurant.name }}</a></h1>
     <input type="text" id="searchInput" onkeyup="filterMenu()" placeholder="Suche...">
     <ul>
         {% for item in menu_items %}

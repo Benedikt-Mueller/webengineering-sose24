@@ -144,3 +144,6 @@ EMAIL_HOST_PASSWORD = 'R3st4ur4ntSystem9476'
 #Bilder:
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+#CSS:
+STATIC_URL = '/static/'

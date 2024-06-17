@@ -1,11 +1,14 @@
 {% extends 'restaurant/base.html' %}
-
+{%load static%}
 {% block content %}
   <h2>Restaurant-Informationen bearbeiten</h2>
-  <form method="post" enctype="multipart/form-data" id="restaurantForm">
+  <form method="post" enctype="multipart/form-data" id="restaurantForm" class="form">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Änderungen speichern</button>
+    <fieldset>
+      <legend>Restaurant-Details</legend>
+      {{ form.as_p }}
+    </fieldset>
+    <button type="submit" class="save-btn">Änderungen speichern</button>
   </form>
   <h3>Vorhandene Bilder</h3>
 {% for form in formset %}

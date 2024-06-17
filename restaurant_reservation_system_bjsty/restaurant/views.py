@@ -311,3 +311,9 @@ def upload_images(request, restaurant_id):
 
     return JsonResponse({'message': 'Bilder wurden erfolgreich hochgeladen!'})
 
+def restaurant_detail(request, pk):
+    restaurant = get_object_or_404(Restaurant, pk=pk)
+    images = restaurant.images.all()
+    feedbacks = Feedback.objects.filter(restaurant=restaurant)
+    menu_items = Menu.objects.filter(restaurant=restaurant)
+    return render(request, 'restaurant/restaurant_detail.html', {'restaurant': restaurant, 'images': images,'feedbacks':feedbacks,'menu_items':menu_items})

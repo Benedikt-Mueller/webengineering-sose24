@@ -1,8 +1,24 @@
+{% load static %}
 <!DOCTYPE html>
 <head>
-    <title>"Restaurant Reservation System"</title>
+    <link rel="stylesheet" href="{% static 'restaurant/style.css' %}" type="text/css">
+    {% block title %}<title>Restaurant Reservation System</title>{% endblock %}
     {% block extra_css %}{% endblock %}
+    <div class="basestyle">
+    <header>
+        <nav>
+            <ul>
+                <li><a href="/restaurant/">Startseite</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="/restaurant/profile">Profil anzeigen</a></li>
+                {% else %}
+                    <li><a href="/auth/login">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
 </head>
+</div>
 <body>
     {% block content %}{% endblock %}
     {% block extra_js %}{% endblock %}

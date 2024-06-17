@@ -47,7 +47,7 @@ class Reservation(models.Model):
 
     def __str__(self):
         return ("Reservation "+str(self.pk)+" at "+str(self.restaurant)+" from "+str(self.customer))
-#Bilder für Reservation:
+#Bilder für Restaurant:
 class RestaurantImage(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='restaurants/%Y/%m/%d/')
