@@ -280,21 +280,27 @@ def change_restaurant(request, restaurant_id):
     ImageFormSet = modelformset_factory(RestaurantImage, form=RestaurantImageForm, extra=3)
     if request.method == 'POST':
         form = RestaurantForm(request.POST, instance=restaurant)
-        formset = ImageFormSet(request.POST, request.FILES, queryset=RestaurantImage.objects.none())
-        if form.is_valid() and formset.is_valid():
+        if form.is_valid():
             form.save()
-            # Durch die formset.valid() bereits bestätigte Bilder gehen
-            for image_form in formset.cleaned_data:
-                if image_form:
-                    image = image_form['image']
-                    photo = RestaurantImage(restaurant=restaurant, image=image)
-                    photo.save()
             # Weiterleitung, z.B. zurück zur Restaurantübersicht
-            return redirect('restaurant/restaurants')
+            return redirect('restaurant_list')
     else:
         form = RestaurantForm(instance=restaurant)
-        formset = ImageFormSet(queryset=RestaurantImage.objects.none())
+        formset = ImageFormSet(queryset=RestaurantImage.objects.filter(restaurant=restaurant))
     return render(request, 'restaurant/change_restaurant.html', {'form': form, 'formset': formset, 'restaurant' : restaurant})
+#Bilder löschen:
+@login_required
+def delete_image(request, image_id):
+    image = get_object_or_404(RestaurantImage, id=image_id, restaurant__owner__user=request.user)
+    primary = image.restaurant.pk
+    url = "/restaurant/restaurant/{}/change_restaurant".format(primary)
+    if request.method == 'POST':
+        image.delete()
+        return redirect(url)  # URL zum Bearbeiten des Restaurants
+    else:
+        # Hinweis anzeigen oder Bestätigungsseite für das Löschen rendern
+        return render(request, 'restaurant/confirm_delete.html', {'object': image})
+#Bilder hochladen:   
 @require_POST
 @login_required
 def upload_images(request, restaurant_id):

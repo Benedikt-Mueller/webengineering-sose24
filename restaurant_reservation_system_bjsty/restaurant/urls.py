@@ -26,6 +26,7 @@ urlpatterns = [
     path('my_reservations/', views.my_reservations, name='my_reservations'),
     path('restaurant/<int:restaurant_id>/change_restaurant/', views.change_restaurant, name='change_restaurant'),
     path('restaurant/<int:restaurant_id>/upload_images/', views.upload_images, name='upload_images'),
+    path('restaurant/image/<int:image_id>/delete/', views.delete_image, name='delete_image'),
     #Not yet used:
     path('profile/', views.profile_view, name='profile_view'),
 ]

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 from .choices import Choices
-
+import os
 
 # Models for User accounts to differentiate between
 class UserProfile(models.Model):
@@ -51,6 +51,14 @@ class Reservation(models.Model):
 class RestaurantImage(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='restaurants/%Y/%m/%d/')
+    def delete(self, using=None, keep_parents=False):
+        # Pfad zur Bilddatei
+        image_path = self.image.path
+        # Aufrufen der ursprünglichen Delete-Methode, um das Objekt aus der Datenbank zu entfernen
+        super().delete(using=using, keep_parents=keep_parents)
+        # Überprüfen, ob die Datei existiert und dann löschen
+        if os.path.isfile(image_path):
+            os.remove(image_path)
     
 # Review and Rating model
 class Review(models.Model):

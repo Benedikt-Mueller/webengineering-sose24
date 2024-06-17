@@ -1,11 +1,11 @@
 <!-- templates/restaurant/search.html -->
 
-{% extends 'base.html' %}
+{% extends 'restaurant/base.html' %}
 
 {% block content %}
 <h2>Suche nach Restaurants</h2>
 <form method="get">
-    {{ form.as_p }}  Django form rendering as paragraph 
+    {{ form.as_p }}
     <button type="submit">Suchen</button>
 </form>
 

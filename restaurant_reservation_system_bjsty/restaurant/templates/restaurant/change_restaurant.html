@@ -7,6 +7,17 @@
     {{ form.as_p }}
     <button type="submit">Änderungen speichern</button>
   </form>
+  <h3>Vorhandene Bilder</h3>
+{% for form in formset %}
+    <div>
+        <!-- Vorschau des Bildes, falls vorhanden -->
+        {% if form.instance.image %}
+            <img src="{{ form.instance.image.url }}" alt="Bild" style="max-width: 100px; max-height: 100px;">
+            <!-- Button zum Löschen des Bildes -->
+            <a href="{% url 'delete_image' form.instance.id %}">Bild löschen</a>
+        {% endif %}
+    </div>
+{% endfor %}
 
   <h3>Bilder hochladen</h3>
   <input type="file" name="images" id="images" multiple>
