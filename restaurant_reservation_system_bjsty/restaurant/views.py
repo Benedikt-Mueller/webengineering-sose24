@@ -15,6 +15,8 @@ from django.core.mail import send_mail
 from zoneinfo import ZoneInfo
 from django.shortcuts import render
 from .models import Table
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
 
 def table_list(request):
     tables = Table.objects.all()
@@ -43,7 +45,7 @@ def createUser(request):
             profile = profile_form.save(commit=False)
             profile.user = user
             profile.save()
-            return redirect('login')  # Angenommen, es existiert eine Login-Seite.
+            return redirect('login_view')  # Angenommen, es existiert eine Login-Seite.
     else:
         user_form = UserForm()
         profile_form = UserProfileForm()
@@ -52,8 +54,6 @@ def createUser(request):
         'profile_form': profile_form
     })
 
-def login(request):
-    return HttpResponse("Login not yet implemented!")
 
 def restaurant_list(request):
     restaurants = Restaurant.objects.all()
@@ -356,9 +356,15 @@ def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('profile')  # or any other page
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                # Weiterleitung zur Startseite oder einer anderen Seite
+                return redirect('profile_view')
+            else:
+                messages.error(request, 'Ungültige Anmeldedaten.')
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
