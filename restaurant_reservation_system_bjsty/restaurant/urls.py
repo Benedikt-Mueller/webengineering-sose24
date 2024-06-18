@@ -38,4 +38,5 @@ urlpatterns = [
     #Profile:
     path('profile/', views.profile_view, name='profile_view'),
     path('owner_view/', views.owner_view, name='owner_view'),
+    path('logout/', views.logout_view, name='logout'),
 ]

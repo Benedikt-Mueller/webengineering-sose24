@@ -11,8 +11,9 @@
                 <li><a href="/restaurant/">Startseite</a></li>
                 {% if user.is_authenticated %}
                     <li><a href="/restaurant/profile">Profil anzeigen</a></li>
+                    <li><a href="/restaurant/logout">Abmelden</a></li>
                 {% else %}
-                    <li><a href="/auth/login">Login</a></li>
+                    <li><a href="/restaurant/login">Login</a></li>
                 {% endif %}
             </ul>
         </nav>
@@ -20,6 +21,13 @@
 </head>
 </div>
 <body>
+    {% if messages %}
+  <div id="messages" style="display: none;">
+    {% for message in messages %}
+      <p>{{ message }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
     {% block content %}{% endblock %}
     {% block extra_js %}{% endblock %}
 </body>

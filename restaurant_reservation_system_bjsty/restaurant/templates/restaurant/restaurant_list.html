@@ -9,6 +9,17 @@
 
 {%block content%}
     <div class="restaurant-list">
+        <script type="text/javascript">
+            window.addEventListener('DOMContentLoaded', (event) => {
+                const messagesContainer = document.getElementById('messages');
+                if (messagesContainer) {
+                    const messages = messagesContainer.querySelectorAll('p');
+                    messages.forEach((msg) => {
+                        alert(msg.textContent); // Zeigt jede Nachricht in einem separaten Alert-Dialog an
+                    });
+                }
+            });
+        </script>
         <h1>Restaurants</h1>
         <ul>
             {% for restaurant in restaurants %}

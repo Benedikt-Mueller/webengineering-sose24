@@ -15,7 +15,7 @@ from django.core.mail import send_mail
 from zoneinfo import ZoneInfo
 from django.shortcuts import render
 from .models import Table
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 def table_list(request):
@@ -88,8 +88,13 @@ def create_reservation(request, restaurant_id):
 @login_required
 def profile_view(request):
     userprofile = get_object_or_404(UserProfile, user = request.user)
-    diningPreferences = DiningPreference.objects.filter(customer=userprofile)
-    return render(request, 'restaurant/profile_view.html', {'user':request.user, 'userprofile':userprofile,'preferences':diningPreferences })
+    if userprofile.role == "owner":
+            return redirect('owner_view')
+    elif userprofile.role == "developer":
+            return redirect(reverse('admin:index'))
+    else:
+        diningPreferences = DiningPreference.objects.filter(customer=userprofile)
+        return render(request, 'restaurant/profile_view.html', {'user':request.user, 'userprofile':userprofile,'preferences':diningPreferences })
 
 @login_required
 def create_feedback(request, restaurant_id):
@@ -362,7 +367,8 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 # Weiterleitung zur Startseite oder einer anderen Seite
-                return redirect('profile_view')
+                next_page = request.POST.get('next', 'restaurant_list')
+                return redirect(next_page)
             else:
                 messages.error(request, 'Ungültige Anmeldedaten.')
     else:
@@ -374,3 +380,9 @@ def owner_view(request):
     currentUser = get_object_or_404(UserProfile, user=request.user)
     restaurants = Restaurant.objects.filter(owner=currentUser)
     return render(request, 'restaurant/owner_view.html', {'restaurants':restaurants})
+
+@login_required
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'Sie wurden erfolgreich abgemeldet.')
+    return redirect('restaurant_list')
