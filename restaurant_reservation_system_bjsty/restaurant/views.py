@@ -45,6 +45,7 @@ def login(request):
 def restaurant_list(request):
     restaurants = Restaurant.objects.all()
     return render(request, 'restaurant/restaurant_list.html', {'restaurants': restaurants})
+  
 
 def restaurant_menu(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
