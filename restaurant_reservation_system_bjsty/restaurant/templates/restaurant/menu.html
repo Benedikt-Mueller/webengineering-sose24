@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ restaurant.name }} Menu</title>
+    <title{{ restaurant.name }} Menu</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #1a1a1a;
+            background-color:#1a1a1a;
             color: #f0f0f0;
         }
         h1 {
-            color: #ffffff;
+            color:#ffffff;
             text-align: center;
             margin-bottom: 30px;
         }
@@ -20,7 +20,7 @@
             padding: 10px;
             margin-bottom: 20px;
             background-color: #333333;
-            color: #f0f0f0;
+            color:#f0f0f0;
             border: none;
             border-radius: 5px;
         }
@@ -35,18 +35,18 @@
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
-        li:hover {
+        li:hover{
             transform: translateY(-5px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
         li p {
             margin: 10px 0 0;
-            color: #cccccc;
+            color:#cccccc;
         }
-        .price {
+       .price {
             font-weight: bold;
-            color: #00b8d4;
-        }
+            color:#00b8d4;
+       }
     </style>
     <script>
         function filterMenu() {
@@ -62,59 +62,13 @@
                     item.style.display = "none";
                 }
             }
-        }
-    </script>
+        }   
+</script>
 </head>
 <body>
-
-<!DOCTYPE <html>
-    <html>
-        <head>
-            <title>Speisekarte</title>
-            <meta charset="UTF-8">
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    background-color: firebrick;
-                    margin: 0;
-                    padding: 20px;
-                }
-                h1 {
-                    color:rgba(0, 0, 0, 0.3);
-                    text-align: center;
-                }
-                ul {
-                    list-style-type: none;
-                    padding: 0;
-
-                }
-                li{
-                    background-color: #ffffff;
-                    padding:0;
-                }
-                .price {
-                    font-weight: bold;
-                    color: #007bff;
-                    margin-bottom: 5px;
-                }
-                p{
-                    margin-top: 5px;
-                    color: #666;
-                }
-                searchInput {
-                    padding: 10px;
-                    width: 100%
-                    
-
-
-                }
-            </style>
-        </head>
-    </html>
-
-</html>
     <h1>Speisekarte für <a href="{% url 'restaurant_detail' restaurant.id %}">{{ restaurant.name }}</a></h1>
     <input type="text" id="searchInput" onkeyup="filterMenu()" placeholder="Suche...">
+    <h2>Speisekarte 1 (nur Euro)</h2>
     <ul>
         {% for item in menu_items %}
         <li>
@@ -123,11 +77,35 @@
         </li>
         {% endfor %}
         <li>
+            <div class="price">Pasta Primavera - 7,50€</div>
+            <p>Penne-Nudeln mit saisonalem Gemüse, Knoblauch und Parmesan</p>
+        </li>
+        <li>
+            <div class="price">Chicken Tikka Masala - 8,50€</div>
+            <p>Gegrillte Hähnchenstreifen in einer cremigen Tomaten-Curry-Sauce, serviert mit Reis</p>
+        </li>
+        <li>
+            <div class="price">Vegetarische Frühlingsrollen - 5,00€</div>
+            <p>Knusprige Frühlingsrollen gefüllt mit Gemüse, serviert mit süß-saurem Dip</p>
+        </li>
+        <li>
+            <div class="price">Griechischer Salat - 6,50€</div>
+            <p>Blattsalat mit Tomaten, Gurken, Paprika, Zwiebeln, Oliven und Feta-Käse</p>
+        </li>
+        <li>
+            <div class="price">Wiener Schnitzel - 9,00€</div>
+            <p>Paniertes Schnitzel vom Kalb, serviert mit Pommes frites und Preiselbeeren</p>
+        </li>
+    </ul>
+
+    <h2>Speisekarte 2 (Euro und Dänische Kronen)</h2>
+    <ul>
+        <li>
             <div class="price">Pasta Primavera - 7,50€ (56,00 DKK)</div>
             <p>Penne-Nudeln mit saisonalem Gemüse, Knoblauch und Parmesan</p>
         </li>
         <li>
-            <div class="price">Chicken Tikka Masala - 8,50€ (63,45 DK)</div>
+            <div class="price">Chicken Tikka Masala - 8,50€ (63,45 DKK)</div>
             <p>Gegrillte Hähnchenstreifen in einer cremigen Tomaten-Curry-Sauce, serviert mit Reis</p>
         </li>
         <li>
@@ -135,27 +113,25 @@
             <p>Knusprige Frühlingsrollen gefüllt mit Gemüse, serviert mit süß-saurem Dip</p>
         </li>
         <li>
-            <div class="price">Griechischer Salat - 6,50€ (48,50)</div>
+            <div class="price">Griechischer Salat - 6,50€ (48,50 DKK)</div>
             <p>Blattsalat mit Tomaten, Gurken, Paprika, Zwiebeln, Oliven und Feta-Käse</p>
         </li>
         <li>
             <div class="price">Wiener Schnitzel - 9,00€ (67,05 DKK)</div>
             <p>Paniertes Schnitzel vom Kalb, serviert mit Pommes frites und Preiselbeeren</p>
         </li>
-    </ul>
         <li>
-            <div class=""price">Smørrebrod - 6,00€ (45,00 DKK)</div>
+            <div class="price">Smørrebrød - 6,00€ (45,00 DKK)</div>
             <p>Offenes Roggenbrot belegt mit Hering, Ei, Fleisch oder Gemüse</p>
         </li>
         <li>
-            <div class="price">Frikadeller - 7,00€ (52,00 DKK</div>
-            <p>Dänische Fleischbällchen aus Schweine- und Kalbfleisch serviert mit Kartoffelsalat</p>
-            </li>
+            <div class="price">Frikadeller - 7,00€ (52,50 DKK)</div>
+            <p>Dänische Fleischbällchen aus Schweine- und Kalbfleisch, serviert mit Kartoffelsalat</p>
         </li>
-            <div class="price">Stegt flæsk - 9,50€ (71,50 DKK)</div>
+        <li>
+            <div class="price">Stegt flæsk - 9,50€ (71,25 DKK)</div>
             <p>Gebratener Schweinebauch mit Petersiliensauce und Kartoffeln</p>
         </li>
     </ul>
 </body>
 </html>
-
