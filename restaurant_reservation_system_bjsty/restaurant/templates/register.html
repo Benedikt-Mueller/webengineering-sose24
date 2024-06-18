@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrieren</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h2>Registrieren</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary">Registrieren</button>
+    </form>
+</div>
+</body>
+</html>

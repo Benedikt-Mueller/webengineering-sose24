@@ -4,6 +4,8 @@ from django.contrib.auth.hashers import make_password
 from .models import *
 from django.http import HttpResponse, Http404, JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
+from .forms import UserForm, ProfileForm
 from django.views.decorators.http import require_POST
 from django.urls import reverse
 from .forms import *
@@ -11,6 +13,19 @@ from django.forms import modelformset_factory
 from django.utils import timezone
 from django.core.mail import send_mail
 from zoneinfo import ZoneInfo
+from django.shortcuts import render
+from .models import Table
+
+def table_list(request):
+    tables = Table.objects.all()
+    remaining_tables = Table.objects.filter(is_reserved=False)
+
+    context = {
+        'restaurant_name': 'Pasha\'s Palace',  # Beispiel für den Restaurantnamen
+        'tables': tables,
+        'remaining_tables': remaining_tables,
+    }
+    return render(request, 'restaurant/table_list.html', context)
 
 
 # views:
@@ -317,6 +332,36 @@ def restaurant_detail(request, pk):
     feedbacks = Feedback.objects.filter(restaurant=restaurant)
     menu_items = Menu.objects.filter(restaurant=restaurant)
     return render(request, 'restaurant/restaurant_detail.html', {'restaurant': restaurant, 'images': images,'feedbacks':feedbacks,'menu_items':menu_items})
+
+#Register
+def register(request):
+    if request.method == 'POST':
+        user_form = UserForm(request.POST)
+        profile_form = ProfileForm(request.POST)
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save(commit=False)
+            user.set_password(user_form.cleaned_data['password'])
+            user.save()
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            profile.save()
+            login(request, user)
+            return redirect('profile')  # or any other page
+    else:
+        user_form = UserForm()
+        profile_form = ProfileForm()
+    return render(request, 'register.html', {'user_form': user_form, 'profile_form': profile_form})
+
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('profile')  # or any other page
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
 
 @login_required
 def owner_view(request):
