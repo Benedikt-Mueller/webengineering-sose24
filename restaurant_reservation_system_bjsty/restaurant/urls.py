@@ -10,7 +10,7 @@ urlpatterns = [
     path("restaurants",views.restaurant_list,name="restaurant_list"),
     path("<string>/menu",views.restaurant_list,name="menu"),
     path('restaurant/<int:restaurant_id>/menu/', views.restaurant_menu, name='restaurant_menu'),
-    path('restaurant/<int:restaurant_id>/tables/', views.view_tables, name='restaurant_tables'),
+    path('restaurant/<int:restaurant_id>/view_tables/', views.view_tables, name='view_tables'),
     path('restaurant/<int:restaurant_id>/create_reservation/', views.create_reservation, name='create_reservation'),
     path('restaurant/<int:restaurant_id>/create_feedback/', views.create_feedback, name='create_feedback'),
     path('restaurant/<int:restaurant_id>/view_feedback/', views.view_feedback, name='view_feedback'),
@@ -28,6 +28,7 @@ urlpatterns = [
     path('restaurant/<int:restaurant_id>/upload_images/', views.upload_images, name='upload_images'),
     path('restaurant/image/<int:image_id>/delete/', views.delete_image, name='delete_image'),
     path('restaurant/<int:pk>/', views.restaurant_detail, name='restaurant_detail'),
-    #Not yet used:
+    #Profile:
     path('profile/', views.profile_view, name='profile_view'),
+    path('owner_view/', views.owner_view, name='owner_view'),
 ]

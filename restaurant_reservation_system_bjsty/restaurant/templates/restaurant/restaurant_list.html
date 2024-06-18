@@ -18,11 +18,11 @@
                     <span class="menu-label">Menü</span>
                 </h2>
                 <p>Standort: {{ restaurant.location }}</p>
-                <p>Küche: {{ restaurant.cuisine }}</p>
+                <p>Küche: {{ restaurant.get_cuisine_display }}</p>
                 <p>Beschreibung: {{ restaurant.description }}</p>
                 <p>Öffnungszeiten: {{ restaurant.opening_hours }}</p>
                 <p>Kontaktinformationen: {{ restaurant.contact_info }}</p>
-                <p><a href="{% url 'restaurant_tables' restaurant.id %}">Verfügbarkeit prüfen</a></p>
+                <p><a href="{% url 'view_tables' restaurant.id %}">Verfügbarkeit prüfen</a></p>
                 <p><a href="{% url 'create_reservation' restaurant.id %}">Reservierung erstellen</a></p>
                 <p><a href="{% url 'create_feedback' restaurant.id %}">Restaurant bewerten</a></p>
                 <p><a href="{% url 'view_feedback' restaurant.id %}">Bewertungen für dieses Restaurant ansehen</a></p>

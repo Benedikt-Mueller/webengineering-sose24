@@ -317,3 +317,9 @@ def restaurant_detail(request, pk):
     feedbacks = Feedback.objects.filter(restaurant=restaurant)
     menu_items = Menu.objects.filter(restaurant=restaurant)
     return render(request, 'restaurant/restaurant_detail.html', {'restaurant': restaurant, 'images': images,'feedbacks':feedbacks,'menu_items':menu_items})
+
+@login_required
+def owner_view(request):
+    currentUser = get_object_or_404(UserProfile, user=request.user)
+    restaurants = Restaurant.objects.filter(owner=currentUser)
+    return render(request, 'restaurant/owner_view.html', {'restaurants':restaurants})
