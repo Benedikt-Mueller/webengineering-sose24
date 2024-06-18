@@ -3,6 +3,17 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from .choices import Choices
 import os
+from django.db import models
+
+class Table(models.Model):
+    number = models.IntegerField(unique=True)
+    capacity = models.IntegerField()
+    location = models.CharField(max_length=100)
+    is_reserved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Tisch {self.number} ({'Reserviert' if self.is_reserved else 'Verfügbar'})"
+
 
 # Models for User accounts to differentiate between
 class UserProfile(models.Model):

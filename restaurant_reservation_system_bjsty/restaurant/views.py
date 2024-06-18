@@ -13,6 +13,19 @@ from django.forms import modelformset_factory
 from django.utils import timezone
 from django.core.mail import send_mail
 from zoneinfo import ZoneInfo
+from django.shortcuts import render
+from .models import Table
+
+def table_list(request):
+    tables = Table.objects.all()
+    remaining_tables = Table.objects.filter(is_reserved=False)
+
+    context = {
+        'restaurant_name': 'Pasha\'s Palace',  # Beispiel für den Restaurantnamen
+        'tables': tables,
+        'remaining_tables': remaining_tables,
+    }
+    return render(request, 'restaurant/table_list.html', context)
 
 
 # views:
