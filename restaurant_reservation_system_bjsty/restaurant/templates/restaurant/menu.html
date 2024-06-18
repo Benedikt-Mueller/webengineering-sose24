@@ -66,6 +66,53 @@
     </script>
 </head>
 <body>
+
+<!DOCTYPE <html>
+    <html>
+        <head>
+            <title>Speisekarte</title>
+            <meta charset="UTF-8">
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: firebrick;
+                    margin: 0;
+                    padding: 20px;
+                }
+                h1 {
+                    color:rgba(0, 0, 0, 0.3);
+                    text-align: center;
+                }
+                ul {
+                    list-style-type: none;
+                    padding: 0;
+
+                }
+                li{
+                    background-color: #ffffff;
+                    padding:0;
+                }
+                .price {
+                    font-weight: bold;
+                    color: #007bff;
+                    margin-bottom: 5px;
+                }
+                p{
+                    margin-top: 5px;
+                    color: #666;
+                }
+                searchInput {
+                    padding: 10px;
+                    width: 100%
+                    
+
+
+                }
+            </style>
+        </head>
+    </html>
+
+</html>
     <h1>Speisekarte für <a href="{% url 'restaurant_detail' restaurant.id %}">{{ restaurant.name }}</a></h1>
     <input type="text" id="searchInput" onkeyup="filterMenu()" placeholder="Suche...">
     <ul>
@@ -76,25 +123,39 @@
         </li>
         {% endfor %}
         <li>
-            <div class="price">Pasta Primavera - 7,50€</div>
+            <div class="price">Pasta Primavera - 7,50€ (56,00 DKK)</div>
             <p>Penne-Nudeln mit saisonalem Gemüse, Knoblauch und Parmesan</p>
         </li>
         <li>
-            <div class="price">Chicken Tikka Masala - 8,50€</div>
+            <div class="price">Chicken Tikka Masala - 8,50€ (63,45 DK)</div>
             <p>Gegrillte Hähnchenstreifen in einer cremigen Tomaten-Curry-Sauce, serviert mit Reis</p>
         </li>
         <li>
-            <div class="price">Vegetarische Frühlingsrollen - 5,00€</div>
+            <div class="price">Vegetarische Frühlingsrollen - 5,00€ (37,30 DKK)</div>
             <p>Knusprige Frühlingsrollen gefüllt mit Gemüse, serviert mit süß-saurem Dip</p>
         </li>
         <li>
-            <div class="price">Griechischer Salat - 6,50€</div>
+            <div class="price">Griechischer Salat - 6,50€ (48,50)</div>
             <p>Blattsalat mit Tomaten, Gurken, Paprika, Zwiebeln, Oliven und Feta-Käse</p>
         </li>
         <li>
-            <div class="price">Wiener Schnitzel - 9,00€</div>
+            <div class="price">Wiener Schnitzel - 9,00€ (67,05 DKK)</div>
             <p>Paniertes Schnitzel vom Kalb, serviert mit Pommes frites und Preiselbeeren</p>
+        </li>
+    </ul>
+        <li>
+            <div class=""price">Smørrebrod - 6,00€ (45,00 DKK)</div>
+            <p>Offenes Roggenbrot belegt mit Hering, Ei, Fleisch oder Gemüse</p>
+        </li>
+        <li>
+            <div class="price">Frikadeller - 7,00€ (52,00 DKK</div>
+            <p>Dänische Fleischbällchen aus Schweine- und Kalbfleisch serviert mit Kartoffelsalat</p>
+            </li>
+        </li>
+            <div class="price">Stegt flæsk - 9,50€ (71,50 DKK)</div>
+            <p>Gebratener Schweinebauch mit Petersiliensauce und Kartoffeln</p>
         </li>
     </ul>
 </body>
 </html>
+
