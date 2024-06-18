@@ -10,11 +10,11 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #1a1a1a;
-            color: #f0f0f0;
+            background-color: #f8f9fa;
+            color: #333;
         }
         h1 {
-            color: #ffffff;
+            color: #007bff;
             text-align: center;
             margin-bottom: 30px;
         }
@@ -23,11 +23,11 @@
             padding: 0;
         }
         li {
-            background-color: #333333;
+            background-color: #ffffff;
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -35,43 +35,66 @@
         }
         li:hover {
             transform: translateY(-5px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
         .table-info {
             flex-grow: 1;
         }
         .availability {
             font-weight: bold;
-            color: #00b8d4;
             text-align: right;
         }
         .available {
-            color: #00e676;
+            color: #28a745;
         }
         .reserved {
-            color: #ff1744;
+            color: #dc3545;
+        }
+        .location {
+            color: #6c757d;
         }
     </style>
 </head>
 <body>
     <h1>Verfügbarkeit der Tische im {{ restaurant.name }}</h1>
-    <ul>
+    <ul id="tableList">
         {% for table in tables %}
-        <li>
+        <li id="table{{ table.number }}">
             <div class="table-info">
                 <span>Tischnummer: {{ table.number }}</span><br>
                 <span>Kapazität: {{ table.capacity }}</span><br>
-                <span>Standort: {{ table.location }}</span>
+                <span class="location">Standort: {{ table.location }}</span>
             </div>
             <div class="availability">
                 {% if table.is_reserved %}
                     <span class="reserved" aria-label="Reserviert">Reserviert</span>
                 {% else %}
                     <span class="available" aria-label="Verfügbar">Verfügbar</span>
+                    <button onclick="reserveTable('{{ table.number }}', '{{ table.capacity }}')"
+                     aria-label="Tisch reservieren">Reservieren</button>
                 {% endif %}
             </div>
         </li>
         {% endfor %}
     </ul>
+
+    <script>
+        function reserveTable(tableNumber, capacity) {
+            // Hier könnte eine AJAX-Anfrage an den Server gesendet werden, um die Reservierung zu speichern
+            alert(`Tisch ${tableNumber} mit Kapazität ${capacity} erfolgreich reserviert!`);
+
+            // Aktualisiere die Verfügbarkeit des Tisches im DOM
+            const tableElement = document.getElementById(`table${tableNumber}`);
+            if (tableElement) {
+                const availabilityElement = tableElement.querySelector('.availability');
+                availabilityElement.innerHTML = `<span class="reserved" aria-label="Reserviert">Reserviert</span>`;
+            }
+
+            // Aktualisiere die Anzeige der verbleibenden Tische
+            const availableTables = document.querySelectorAll('.available').length;
+            alert(`Es sind noch ${availableTables} Tische verfügbar.`);
+        }
+    </script>
 </body>
 </html>
+
