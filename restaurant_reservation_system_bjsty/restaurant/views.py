@@ -382,6 +382,12 @@ def owner_view(request):
     return render(request, 'restaurant/owner_view.html', {'restaurants':restaurants})
 
 @login_required
+def staff_view(request):
+    currentUser = get_object_or_404(UserProfile, user=request.user)
+    restaurants = Restaurant.objects.filter(owner=currentUser)
+    return render(request, 'restaurant/staff_view.html', {'restaurants':restaurants})
+
+@login_required
 def logout_view(request):
     logout(request)
     messages.success(request, 'Sie wurden erfolgreich abgemeldet.')
