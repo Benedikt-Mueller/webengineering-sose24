@@ -1,7 +1,12 @@
 {%extends 'marketing/base.html'%}
 {%block content%}
-<h1>Altersgruppen-Statistik</h1>
+<h1>Statistiken</h1>
+    <h2>Altersgruppen:</h2>
     <div>
-        <img src="{{ plot_path }}" alt="Altersgruppen-Statistik">
+        <img src="/media/images/marketing/altersgruppen_plot.png" alt="Altersgruppen-Statistik">
+    </div>
+    <h2>Reservierungen pro Tag:</h2>
+    <div>
+        <img src="/media/images/marketing/reservation_graph.png" alt="Reservierungs-Statistik">
     </div>
 {%endblock%}
