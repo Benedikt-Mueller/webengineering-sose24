@@ -67,7 +67,7 @@
     <ul>
         {% for feedback in feedbacks %}
         <li>
-            <h2>{{feedback.vote}}</h2>
+            <h2>{{feedback.get_vote_display}}</h2>
             <p>Begründung:</p>
             <p>{{feedback.feedback}}</p>
             <p class="author">Verfasst von: {{feedback.customer}}</p>
