@@ -55,17 +55,19 @@
     <p>Beschreibung: {{ restaurant.description }}</p>
     <p>Öffnungszeiten: {{ restaurant.opening_hours }}</p>
     <p>Kontaktinformationen: {{ restaurant.contact_info }}</p>
+    {%if images%}
     <div>
         <h2>Bilder</h2>
         {% for image in images %}
             <img src="{{ image.image.url }}" alt="Bild von {{ restaurant.name }}" style="width:300px;"> <!-- Stellen Sie Stile nach Bedarf ein -->
         {% endfor %}
     </div>
+    {%endif%}
     <h1>Bewertung von anderen Kunden: {{restaurant}}</h1>
     <ul>
         {% for feedback in feedbacks %}
         <li>
-            <h2>{{feedback.vote}}</h2>
+            <h2>{{feedback.get_vote_display}}</h2>
             <p>Begründung:</p>
             <p>{{feedback.feedback}}</p>
             <p class="author">Verfasst von: {{feedback.customer}}</p>

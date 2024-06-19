@@ -1,0 +1,24 @@
+{% extends "restaurant/base.html" %}
+{%load static%}
+{%block title%}<title>Verwaltung</title>
+{%endblock%}
+
+{%block extra_css%}
+    <link rel="stylesheet" href="{% static 'restaurant/list_style.css' %}" type="text/css">
+{%endblock%}
+{%block content%}
+<div class="restaurant-list">
+    <h1>Restaurant-Verwaltung</h1>
+    <ul>
+        {% for restaurant in restaurants %}
+        <li>
+            <h2>Name des Restaurants: {{ restaurant.name }}</h2>
+            <p><a href="{% url 'manage_reservations' restaurant.id %}">Reservierungen bearbeiten </a></p>
+            <p><a href="{% url 'create_promotion' restaurant.id %}">Werbeaktion erstellen</a></p>
+            <p><a href="{% url 'view_tables' restaurant.id %}">Tische anzeigen</a></p>
+            <p><a href="{% url 'view_feedback' restaurant.id %}">Bewertungen dieses Restaurants ansehen</a></p>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{%endblock%}
