@@ -1,12 +1,23 @@
 {%extends 'marketing/base.html'%}
 {%block content%}
-<h1>Statistiken</h1>
+<h1>Statistiken zu Kundengruppen: </h1>
     <h2>Altersgruppen:</h2>
     <div>
         <img src="/media/images/marketing/altersgruppen_plot.png" alt="Altersgruppen-Statistik">
     </div>
     <h2>Reservierungen pro Tag:</h2>
+    <p> Zeitraum: Letzte 6 Wochen </p>
     <div>
         <img src="/media/images/marketing/reservation_graph.png" alt="Reservierungs-Statistik">
+    </div>
+    <h2>Durchschnittliche Buchungen je Zeitfenster:</h2>
+    <p> Beachten Sie, dass ein Zeitfenster immer von :00 bis :59 geht, d.h. das Zeitfenster 10-12 Uhr deckt alle Buchungen von 10:00:00 - 12:59:59 ab! </p>
+    <div>
+        <img src="/media/images/marketing/timeslot_graph.png" alt="Zeitfenster-Statistik">
+    </div>
+    <h2>Bevorzugte Küchen:</h2>
+    <p> Beachten Sie, dass diese Daten lediglich die bewusst eingestellten Vorlieben der Kunden darstellen. </p>
+    <div>
+        <img src="/media/images/marketing/preference_plot.png" alt="Zeitfenster-Statistik">
     </div>
 {%endblock%}
