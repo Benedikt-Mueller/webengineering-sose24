@@ -53,10 +53,15 @@
         .location {
             color: #6c757d;
         }
+        .summary {
+            margin: 20px 0;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <h1>Verfügbarkeit der Tische im {{ restaurant.name }}</h1>
+    <div id="summary" class="summary"></div>
     <ul id="tableList">
         {% for table in tables %}
         <li id="table{{ table.number }}">
@@ -79,6 +84,23 @@
     </ul>
 
     <script>
+        function updateSummary() {
+            const tables = document.querySelectorAll('#tableList li');
+            let availableTables = 0;
+            let totalCapacity = 0;
+
+            tables.forEach(table => {
+                const isAvailable = table.querySelector('.available');
+                if (isAvailable) {
+                    availableTables++;
+                    totalCapacity += parseInt(table.querySelector('.table-info span:nth-child(2)').innerText.split(': ')[1]);
+                }
+            });
+
+            const summary = document.getElementById('summary');
+            summary.innerHTML = `Es sind noch ${availableTables} Tische verfügbar. Insgesamt ${totalCapacity} Personen können noch reservieren.`;
+        }
+
         function reserveTable(tableNumber, capacity) {
             // Hier könnte eine AJAX-Anfrage an den Server gesendet werden, um die Reservierung zu speichern
             alert(`Tisch ${tableNumber} mit Kapazität ${capacity} erfolgreich reserviert!`);
@@ -90,10 +112,12 @@
                 availabilityElement.innerHTML = `<span class="reserved" aria-label="Reserviert">Reserviert</span>`;
             }
 
-            // Aktualisiere die Anzeige der verbleibenden Tische
-            const availableTables = document.querySelectorAll('.available').length;
-            alert(`Es sind noch ${availableTables} Tische verfügbar.`);
+            // Aktualisiere die Anzeige der verbleibenden Tische und Kapazitäten
+            updateSummary();
         }
+
+        // Initiale Zusammenfassung aktualisieren
+        document.addEventListener('DOMContentLoaded', updateSummary);
     </script>
 </body>
 </html>
