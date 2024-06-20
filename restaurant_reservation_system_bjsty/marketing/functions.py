@@ -39,29 +39,42 @@ def generateAgePlot():
     plt.tight_layout()
     plt.close()
 
-def generateReservationGraph(weeks_old = 6, location = None):
+def generateReservationGraph(location = None, start = None, end = None, givenRestaurant = None):
 
-    start_datum = datetime.datetime.today() - datetime.timedelta(weeks=weeks_old)
-    end_datum = datetime.datetime.today()
+    isCustom = False
+    if(start is not None):
+        start_datum = datetime.datetime.combine(start, datetime.time())
+        isCustom = True
+    else:
+        #Standardwert: 6 Wochen
+        start_datum = datetime.datetime.today() - datetime.timedelta(weeks=6)
+
+    if(end is not None):
+        end_datum = datetime.datetime.combine(end, datetime.time())
+        isCustom = True
+    else:
+        end_datum = datetime.datetime.today()
+    
 
     # Erstellung einer Datumsreihe von start_datum bis end_datum
     datumsreihe = pd.date_range(start=start_datum, end=end_datum).date
     volle_datumsreihe_df = pd.DataFrame(datumsreihe, columns=['date'])
 
-    # Berechnen Sie das Datum vor 6 Wochen
-    time_ago = make_aware(datetime.datetime.today() - datetime.timedelta(weeks=6))
-
     # Daten beschaffen. Ist eine location angegeben, wird diese ebenfalls gefiltert:
-    if location is not None:
-        reservierungen = Reservation.objects.filter(date_time__gte=time_ago, restaurant__location=location).order_by('date_time')
+    if location is not None and location is not "":
+        reservierungen = Reservation.objects.filter(date_time__range = (start_datum,end_datum), restaurant__location=location).order_by('date_time')
+        isCustom = True
     else:
-        reservierungen = Reservation.objects.filter(date_time__gte=time_ago).order_by('date_time')
+        reservierungen = Reservation.objects.filter(date_time__range = (start_datum,end_datum)).order_by('date_time')
 
+    if givenRestaurant is not None and givenRestaurant is not "":
+        reservierungen = reservierungen.filter(restaurant__name__icontains=givenRestaurant)
+        isCustom = True
+    
     # Erstellen Sie ein DataFrame mit den Daten
     graph = pd.DataFrame(list(reservierungen.values('date_time', 'customer', 'restaurant', 'party_size', 'special_requests', 'status')))
     vollstaendiger_df = None #Variable im lokalen Kontext bekanntmachen
     if not graph.empty:
-        print("Der Graf")
         # Konvertieren Sie `date_time` zu nur einem Datum (ohne Zeit)
         graph['date'] = graph['date_time'].dt.date
         # Gruppieren Sie die Daten nach dem Datum und zählen Sie die Anzahl der Reservierungen pro Tag
@@ -77,19 +90,30 @@ def generateReservationGraph(weeks_old = 6, location = None):
         # Setzen Sie die Beschriftungen und Titel
         plt.xlabel('Datum')
         plt.ylabel('Anzahl der Reservierungen')
-        plt.title('Reservierungen der letzten 6 Wochen pro Tag')
+        title = 'Reservierungen der letzten 6 Wochen pro Tag'
+        if(isCustom):
+            d1 = start_datum.date()
+            d2 = end_datum.date()
+            title = 'Reservierungen vom ' + str(d1) + ' bis zum ' + str(d2)
+            if location is not None and location is not "":
+                title = title + ' in ' + location
+            if givenRestaurant is not None and givenRestaurant is not "":
+                title = title + ' bei ' + givenRestaurant
+        plt.title(title)
         plt.xticks(rotation=45)  # Drehen Sie die Datumsbeschriftungen für bessere Lesbarkeit
 
         # Zeigen Sie das Diagramm an
         plt.tight_layout()
         plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/reservation_graph.png')
+        if(isCustom):
+            plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/custom.png')
+ 
         checkFolderExisting(plot_path)
         plt.savefig(plot_path)
         plt.close()
 
     #Existieren keine Daten, wird das "no data availabe"-PNG statt der Statistik angezeigt.
     else:
-        print("No data")
         origin = os.path.join(settings.MEDIA_ROOT,'images/marketing/no_data.png')
         print(settings.MEDIA_ROOT)
         print(origin)

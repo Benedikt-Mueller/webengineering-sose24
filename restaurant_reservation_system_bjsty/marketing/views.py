@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .functions import * #Erlaub Zugriff auf die ausgelagerten Funktionen
+from .forms import *
 
 #Die Statistiken dieses Marketing-Moduls verwenden Matplotlib, Pandas und Seaborn, da wir diese Module auch im Kurs "Data Science" verwenden und damit vertraut sind. Außerdem können Performanceprobleme auf Clientseite so ausgeschlossen werden,
 #die bei JavaScript gegebenenfalls auftreten können. Die Statistiken werden über ausgelagerte Methoden als Bild generiert und anschließend im Template geladen. 
@@ -16,3 +17,27 @@ def customer_data_view(request):
     generateSeasonGraph()
     #Template anzeigen:++
     return render(request, 'marketing/customer_data.html')
+
+def custom_data_input(request):
+    if request.method == 'POST':
+        form = StatistikForm(request.POST)
+        print("hehe")
+        if form.is_valid():
+            # Verarbeiten Sie die Daten je nach ausgewählter Statistik
+            statistik_typ = form.cleaned_data['statistik_typ']
+            start = form.cleaned_data['startdatum']
+            end = form.cleaned_data['enddatum']
+            print("-------"+ statistik_typ + "---------")
+            if(statistik_typ == 'res_tag'):
+                generateReservationGraph(start=start,end=end)
+            if(statistik_typ == 'res_timeslot'):
+                return None
+            if(statistik_typ == 'feedback'):
+                return None
+            # Logik für die Datenverarbeitung je nach statistik_typ
+            return render(request, 'marketing/custom_input.html', {'form': form,'image':True})
+    else:
+        form = StatistikForm()
+        print(form.fields)
+        print("kl")
+    return render(request, 'marketing/custom_input.html', {'form': form,'image':False})

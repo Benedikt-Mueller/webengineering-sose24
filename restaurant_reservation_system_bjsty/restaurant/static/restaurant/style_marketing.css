@@ -72,7 +72,7 @@ body {
     text-align: center;
 }
 
-.button {
+button, input[type="submit"] {
     display: inline-block;
     background-color: #005a36; /* Dunkelgrün */
     color: #ffffff;
@@ -158,3 +158,20 @@ body {
   .prev:hover, .next:hover {
     background-color: rgba(0,0,0,0.8);
   }
+
+  .stat_form {
+    background-color: #616161; 
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px auto;
+    width: 75%;
+    color:white;
+  }
+  .stat_form p input, form p select, form p textarea {
+    width: 100%;
+    box-sizing: border-box; 
+  }
+  .stat_form p label {
+    display: block; 
+    margin-bottom: 5px; 
+}
