@@ -18,12 +18,19 @@
     margin-right: auto;
     border:2px solid green;
     width:auto;
-    margin-top:5%;" src="/media/images/marketing/custom.png" alt="Eigene Statistik" id="Statistik">
+    margin-top:5%;" src="/media/images/marketing/custom.png" alt="Eigene Statistik" id="statistik">
 {%endif%}
 {%endblock%}
 
 {%block extra_js%}
 <script>
+    function loadImage() {
+        var timestamp = new Date().getTime();
+        var img = document.getElementById('statistik');
+        img.src = '/media/images/marketing/custom.png?nocache=' + timestamp;
+      }
+
+
     document.addEventListener('DOMContentLoaded', function() {
         var selectElement = document.getElementsByName('statistik_typ')[0];
         
@@ -60,6 +67,6 @@
         // Initialer Aufruf
         selectElement.dispatchEvent(new Event('change'));
     });
-    
+    loadImage();
     </script>
 {%endblock%}

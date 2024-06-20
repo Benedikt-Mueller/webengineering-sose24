@@ -131,8 +131,8 @@ def generateTimeslotGraph(location = None, start = None, end = None, givenRestau
         start_datum = datetime.datetime.combine(start, datetime.time())
         isCustom = True
     else:
-        #Standardwert: 6 Wochen
-        start_datum = datetime.datetime.today() - datetime.timedelta(weeks=6)
+        #Standardwert: 52 Wochen
+        start_datum = datetime.datetime.today() - datetime.timedelta(weeks=52)
 
     if(end is not None):
         end_datum = datetime.datetime.combine(end, datetime.time())
@@ -143,16 +143,19 @@ def generateTimeslotGraph(location = None, start = None, end = None, givenRestau
     #Relevante Werte bestimmen:
     queryset = Reservation.objects.all().values('date_time', 'party_size')
     if(isCustom):
-        queryset = queryset.filter(date_time__range = (start_datum,end_datum), restaurant__location=location).order_by('date_time')
+        queryset = queryset.filter(date_time__range = (start_datum,end_datum)).order_by('date_time')
         if location is not None and location != "":
             queryset = queryset.filter(date_time__range = (start_datum,end_datum), restaurant__location=location).order_by('date_time')
-        if givenRestaurant is not None and location != "":
+            print("Location found!")
+        if givenRestaurant is not None and givenRestaurant != "":
             queryset = queryset.filter(restaurant__name__icontains=givenRestaurant)
+            print("Restaurant found!")
             
 
     
     #Dataframe laden:
     timeslot_bookings = pd.DataFrame(list(queryset))
+    print(timeslot_bookings)
     if not timeslot_bookings.empty:
         timeslot_bookings['time_slot'] = timeslot_bookings['date_time'].apply(get_time_slot)
         average_bookings = timeslot_bookings.groupby('time_slot')['party_size'].mean().reset_index()
@@ -168,6 +171,7 @@ def generateTimeslotGraph(location = None, start = None, end = None, givenRestau
         on='time_slot',
         how='left'
         )
+        
         #0 (Zahl) statt NaN einfügen:
         average_bookings_complete['party_size'] = average_bookings_complete['party_size'].fillna(0)
 
@@ -180,7 +184,7 @@ def generateTimeslotGraph(location = None, start = None, end = None, givenRestau
         if(isCustom):
                 d1 = start_datum.date()
                 d2 = end_datum.date()
-                title = 'Buchungen pro Zeitfenster vom ' + str(d1) + ' bis zum ' + str(d2)
+                title = 'Buchungen pro Zeitfenster vom ' + str(d1) + ' bis zum ' + str(d2) +'\n'
                 if location is not None and location != "":
                     title = title + ' in ' + location
                 if givenRestaurant is not None and givenRestaurant != "":

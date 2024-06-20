@@ -33,7 +33,7 @@ def custom_data_input(request):
             if(statistik_typ == 'res_tag'):
                 generateReservationGraph(start=start,end=end,location=location,givenRestaurant=restaurant)
             if(statistik_typ == 'res_timeslot'):
-                generateTimeslotGraph(start=start,end=end)
+                generateTimeslotGraph(start=start,end=end,location=location,givenRestaurant=restaurant)
             if(statistik_typ == 'feedback'):
                 return None
             # Logik für die Datenverarbeitung je nach statistik_typ
