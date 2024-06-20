@@ -1,0 +1,65 @@
+{%extends 'marketing/base.html'%}
+
+{%block topbar%}
+<div class="topbar">
+    <h1>Eigene Statistiken erzeugen:</h1>
+</div>
+{%endblock%}
+
+{%block content%}
+<form method="post" class="stat_form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Absenden</button>
+</form>
+{%if image%}
+<img style="display: block; 
+    margin-left: auto; 
+    margin-right: auto;
+    border:2px solid green;
+    width:auto;
+    margin-top:5%;" src="/media/images/marketing/custom.png" alt="Eigene Statistik" id="Statistik">
+{%endif%}
+{%endblock%}
+
+{%block extra_js%}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var selectElement = document.getElementsByName('statistik_typ')[0];
+        
+        selectElement.addEventListener('change', function() {
+            var showHideElements = function(show,fields=['startdatum', 'enddatum', 'location', 'restaurant']) {
+                fields.forEach(function(field) {
+                    var element = document.getElementsByName(field)[0];
+                    if(show) {
+                        element.parentElement.style.display = ''; // Zeigt das Feld an
+                    } else {
+                        element.parentElement.style.display = 'none'; // Versteckt das Feld
+                    }
+                });
+            };
+            // Versteckt die Felder basierend auf der Auswahl
+            console.log(this.value)
+            if(this.value === 'no_select') {
+                // Versteckt die Felder
+                showHideElements(false);
+            } else if (this.value === 'res_tag' || this.value === 'res_timeslot'){
+                var fields = ['startdatum', 'enddatum', 'location', 'restaurant'];
+                // Zeigt die Felder an
+                showHideElements(true, fields);
+            } else if (this.value === 'feedback'){
+                var fields = ['startdatum', 'enddatum', 'restaurant'];
+                // Zeigt die Felder an
+                showHideElements(true, fields);
+                fields =['location'];
+                showHideElements(false,fields);
+            } else{
+                showHideElements(true);
+            }
+        });
+        // Initialer Aufruf
+        selectElement.dispatchEvent(new Event('change'));
+    });
+    
+    </script>
+{%endblock%}
