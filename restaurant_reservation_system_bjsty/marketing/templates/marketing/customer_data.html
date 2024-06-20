@@ -1,23 +1,80 @@
 {%extends 'marketing/base.html'%}
+
+{%block topbar%}
+<div class="topbar">
+    <h1>Allgemeine Statistiken:</h1>
+</div>
+{%endblock%}
 {%block content%}
-<h1>Statistiken zu Kundengruppen: </h1>
-    <h2>Altersgruppen:</h2>
-    <div>
-        <img src="/media/images/marketing/altersgruppen_plot.png" alt="Altersgruppen-Statistik">
+<div class="statistic-container"> <!-- Slideshow Container -->
+    <div class="statistic-item slide">
+        <h2>Altersgruppen:</h2>
+        <img src="/media/images/marketing/altersgruppen_plot.png" alt="Altersgruppen-Statistik" id="altersgruppen">
     </div>
-    <h2>Reservierungen pro Tag:</h2>
-    <p> Zeitraum: Letzte 6 Wochen </p>
-    <div>
-        <img src="/media/images/marketing/reservation_graph.png" alt="Reservierungs-Statistik">
+    <div class="statistic-item slide">
+        <h2>Reservierungen pro Tag:</h2>
+        <p> Zeitraum: Letzte 6 Wochen </p>
+        <img src="/media/images/marketing/reservation_graph.png" alt="Reservierungs-Statistik" id="reservation_days"> 
     </div>
-    <h2>Durchschnittliche Buchungen je Zeitfenster:</h2>
-    <p> Beachten Sie, dass ein Zeitfenster immer von :00 bis :59 geht, d.h. das Zeitfenster 10-12 Uhr deckt alle Buchungen von 10:00:00 - 12:59:59 ab! </p>
-    <div>
-        <img src="/media/images/marketing/timeslot_graph.png" alt="Zeitfenster-Statistik">
+    <div class="statistic-item slide">
+        <h2>Durchschnittliche Buchungen je Zeitfenster:</h2>
+        <p> Beachten Sie, dass ein Zeitfenster immer von :00 bis :59 geht, d.h. das Zeitfenster 10-12 Uhr deckt alle Buchungen von 10:00:00 - 12:59:59 ab! </p>
+        <img src="/media/images/marketing/timeslot_graph.png" alt="Zeitfenster-Statistik" id="reservation_slots">
     </div>
-    <h2>Bevorzugte Küchen:</h2>
-    <p> Beachten Sie, dass diese Daten lediglich die bewusst eingestellten Vorlieben der Kunden darstellen. </p>
-    <div>
-        <img src="/media/images/marketing/preference_plot.png" alt="Zeitfenster-Statistik">
+    <div class="statistic-item slide">
+        <h2>Bevorzugte Küchen:</h2>
+        <p> Beachten Sie, dass diese Daten lediglich die bewusst eingestellten Vorlieben der Kunden darstellen. </p>
+        <img src="/media/images/marketing/preference_plot.png" alt="Bevorzugte Küchen-Statistik" id="preferred_cuisine">
     </div>
+    <div class="statistic-item slide">
+        <h2>Reservierungen je Saison:</h2>
+        <p> Beachten Sie, dass diese Daten für alle eingetragenen Restaurants gerechnet werden. </p>
+        <img src="/media/images/marketing/season_graph.png" alt="Saison-Statistik" id="reservation_season">
+    </div>   
+</div>
+<a class="prev" onclick="plusSlides(-1)">❮</a>
+<a class="next" onclick="plusSlides(1)">❯</a>    
+
+
+    <!--Sicherstellen, dass keine Inhalte aus dem Cache geladen werden-->
+    <script>
+        //Funktionen und Variablen deklarieren:
+        function loadImage() {
+            var timestamp = new Date().getTime();
+            var img = document.getElementById('altersgruppen');
+            img.src = '/media/images/marketing/altersgruppen_plot.png?nocache=' + timestamp;
+
+            img = document.getElementById('reservation_days');
+            img.src = '/media/images/marketing/reservation_graph.png?nocache=' + timestamp;
+
+            img = document.getElementById('reservation_slots');
+            img.src = '/media/images/marketing/timeslot_graph.png?nocache=' + timestamp;
+
+            img = document.getElementById('preferred_cuisine');
+            img.src = '/media/images/marketing/preference_plot.png?nocache=' + timestamp;
+
+            img = document.getElementById('reservation_season');
+            img.src = '/media/images/marketing/season_graph.png?nocache=' + timestamp;
+          }
+        var slideIndex = 1;
+        function plusSlides(n) {
+        showSlides(slideIndex += n);
+        }
+
+        function showSlides(n) {
+             var i;
+            var slides = document.getElementsByClassName("slide");
+            if (n > slides.length) {slideIndex = 1}    
+            if (n < 1) {slideIndex = slides.length}
+            for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";  
+            }
+            slides[slideIndex-1].style.display = "block";  
+        }
+        //Funktionsaufrufe:
+        window.onload = function() {
+            loadImage();
+            showSlides(slideIndex);
+        };
+    </script>
 {%endblock%}

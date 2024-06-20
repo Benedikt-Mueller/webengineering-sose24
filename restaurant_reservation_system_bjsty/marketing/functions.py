@@ -61,6 +61,7 @@ def generateReservationGraph(weeks_old = 6, location = None):
     graph = pd.DataFrame(list(reservierungen.values('date_time', 'customer', 'restaurant', 'party_size', 'special_requests', 'status')))
     vollstaendiger_df = None #Variable im lokalen Kontext bekanntmachen
     if not graph.empty:
+        print("Der Graf")
         # Konvertieren Sie `date_time` zu nur einem Datum (ohne Zeit)
         graph['date'] = graph['date_time'].dt.date
         # Gruppieren Sie die Daten nach dem Datum und zählen Sie die Anzahl der Reservierungen pro Tag
@@ -88,6 +89,7 @@ def generateReservationGraph(weeks_old = 6, location = None):
 
     #Existieren keine Daten, wird das "no data availabe"-PNG statt der Statistik angezeigt.
     else:
+        print("No data")
         origin = os.path.join(settings.MEDIA_ROOT,'images/marketing/no_data.png')
         print(settings.MEDIA_ROOT)
         print(origin)
@@ -116,7 +118,7 @@ def generateTimeslotGraph():
     how='left'
     )
     #0 (Zahl) statt NaN einfügen:
-    average_bookings_complete['party_size'].fillna(0, inplace=True)
+    average_bookings_complete['party_size'] = average_bookings_complete['party_size'].fillna(0)
 
     # Seaborn / Matplotlib:
     sns.barplot(x='time_slot', y='party_size', data=average_bookings_complete)
@@ -126,6 +128,32 @@ def generateTimeslotGraph():
     plt.xticks(rotation=45)
     plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/timeslot_graph.png')
     checkFolderExisting(plot_path)
+    plt.tight_layout()
+    plt.savefig(plot_path)
+    plt.close()
+
+def generateSeasonGraph():
+    # Import:
+    queryset = Reservation.objects.all().values('date_time', 'party_size')
+    print(queryset)
+    reservation_data = pd.DataFrame(list(queryset))
+    print(reservation_data)
+    reservation_data['season'] = reservation_data['date_time'].dt.date.apply(get_season)
+    print(reservation_data)
+
+    # Durchschnitt berechnen:
+    average_bookings_by_season = reservation_data.groupby('season')['party_size'].mean().reset_index()
+
+    # Seaborn / Matplotlib:
+    sns.barplot(x='season', y='party_size', data=average_bookings_by_season, order=['Winter', 'Frühling', 'Sommer', 'Herbst'])
+    plt.xlabel('Saison')
+    plt.ylabel('Durchschnittliche Reservierungen')
+    plt.title('Durchschnittliche Reservierungen nach Saison')
+    plt.xticks(rotation=45)
+    
+    #Speichern:
+    plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/season_graph.png')
+    checkFolderExisting(plot_path)  # Funktion, um zu überprüfen/erstellen des Verzeichnisses
     plt.tight_layout()
     plt.savefig(plot_path)
     plt.close()
@@ -189,3 +217,22 @@ def get_time_slot(date_time):
         return '20-22 Uhr'
     else:
         return '23-06 Uhr'
+    
+def get_season(date):
+    year = date.year
+    if not isinstance(date, pd.Timestamp):
+        date = pd.Timestamp(date)
+        print("Großes Erfolg!")
+    #Schaltjahre:
+    feb_end = '02-29' if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else '02-28'
+    seasons = {
+        'Winter': pd.date_range(start=f"{year}-12-01", end=f"{year}-12-31").union(
+                  pd.date_range(start=f"{year}-01-01", end=f"{year}-{feb_end}")),
+        'Frühling': pd.date_range(start=f"{year}-03-01", end=f"{year}-05-31"),
+        'Sommer': pd.date_range(start=f"{year}-06-01", end=f"{year}-08-31"),
+        'Herbst': pd.date_range(start=f"{year}-09-01", end=f"{year}-11-30")
+    }
+    for season, date_range in seasons.items():
+        if date in date_range:
+            return season
+    return 'Unbekannt'  # Für den Fall, dass das Datum nicht zugeordnet werden kann (Schaltjahr beachten)

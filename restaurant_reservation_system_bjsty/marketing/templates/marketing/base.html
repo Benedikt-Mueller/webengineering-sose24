@@ -1,33 +1,43 @@
 {% load static %}
 <!DOCTYPE html>
+<!DOCTYPE html>
+<html>
 <head>
-    <link rel="stylesheet" href="{% static 'restaurant/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'restaurant/style_marketing.css' %}" type="text/css">
     {% block title %}<title>Marketing - Restaurant</title>{% endblock %}
     {% block extra_css %}{% endblock %}
-    <div class="basestyle">
-    <header>
-        <nav>
-            <ul>
-                <li><a href="/restaurant/">Startseite</a></li>
-                {% if user.is_authenticated %}
-                    <li><a href="/restaurant/profile">Profil anzeigen</a></li>
-                    <li><a href="/restaurant/logout">Abmelden</a></li>
-                {% else %}
-                    <li><a href="/restaurant/login">Login</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-    </header>
 </head>
-</div>
 <body>
-    {% if messages %}
-  <div id="messages" style="display: none;">
-    {% for message in messages %}
-      <p>{{ message }}</p>
-    {% endfor %}
-  </div>
-{% endif %}
-    {% block content %}{% endblock %}
+    <div class="page-layout">
+        <div class="sidebar">
+            <nav>
+                <ul>
+                    {% if user.is_authenticated %}
+                        <li><a href="/marketing/customers">Allgemeine Statistiken</a></li>
+                        <li><a href="/marketing/custom">Individuelle Statistiken</a></li>
+                        <li><a href="/restaurant/profile">Profil anzeigen</a></li>
+                        <li><a href="/restaurant/logout">Abmelden</a></li>
+                    {% else %}
+                        <li><a href="/restaurant/login">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        <div class="first-content-area">
+            {%block topbar%}{%endblock%}
+            <div class="second-content-area">
+                {% if messages %}
+                    <div id="messages" style="display: none;">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
     {% block extra_js %}{% endblock %}
 </body>
+</html>
