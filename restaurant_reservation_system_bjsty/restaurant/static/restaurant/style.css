@@ -1,94 +1,153 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0px;
-    background-color: #1a1a1a;
-    color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0px;
+  background-color: #1a1a1a;
+  color: #f0f0f0;
 }
 
 header {
-    background-color: #003366; /* Dunkelblau */
-    color: white;
-    font-size: 18px;
+  background-color: #003366; /* Dunkelblau */
+  color: white;
+  font-size: 18px;
 }
 
 nav ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 nav ul li {
-    float: left;
+  float: left;
 }
 
 nav ul li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
 }
 
 nav ul li a:hover, nav ul li a:focus {
-    background-color: #555; 
+  background-color: #555;
 }
 
-.form {
-    background-color: #262626; 
-    padding: 20px;
-    border-radius: 8px;
-    margin: 20px auto;
-    width: fit-content;
-  }
-  
-  .form fieldset {
-    border: 1px solid #555;
-    border-radius: 5px;
-    padding: 10px;
-  }
-  
-  .form legend {
-    color: #f0f0f0;
-    font-size: 1.2em;
-  }
-  
-  .form p {
-    color: #f0f0f0;
-  }
-  
-  button, input[type="submit"] {
-    background-color: #004488; 
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-  }
-  
-  button:hover, button:focus, input[type="submit"]:hover {
-    background-color: #0066AA;
-    outline: none; 
-  }
-  
-  .form label {
-    display: block; 
-    margin: 10px 0 5px;
-  }
+/* Modernisierte Formularstile */
+.form, .modern-form {
+  background-color: #262626;
+  padding: 30px;
+  border-radius: 8px;
+  margin: 20px auto;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
 
-  .custom-file-upload {
-    background-color: #004488; /* Dunkelblau, wie im Header */
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    display: inline-block;
-  }
-  
-  .custom-file-upload:hover, .custom-file-upload:focus {
-    background-color: #0066AA;
-  }
+.form fieldset, .modern-form fieldset {
+  border: 1px solid #555;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.form legend, .modern-form legend {
+  color: #00b8d4;
+  font-size: 1.2em;
+}
+
+.form p, .modern-form p {
+  color: #f0f0f0;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form label, .modern-form label, .form-group label {
+  display: block;
+  margin: 10px 0 5px;
+  color: #f0f0f0;
+}
+
+.form-group input,
+.form-group select,
+.form input,
+.form select,
+.modern-form input,
+.modern-form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background-color: #333;
+  color: #f0f0f0;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form input:focus,
+.form select:focus,
+.modern-form input:focus,
+.modern-form select:focus {
+  outline: none;
+  border-color: #00b8d4;
+}
+
+button, 
+input[type="submit"],
+.btn-submit {
+  background-color: #00b8d4;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover, 
+button:focus, 
+input[type="submit"]:hover,
+.btn-submit:hover {
+  background-color: #0097a7;
+  outline: none;
+}
+
+.back-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: #00b8d4;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.custom-file-upload {
+  background-color: #004488;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  display: inline-block;
+}
+
+.custom-file-upload:hover, 
+.custom-file-upload:focus {
+  background-color: #0066AA;
+}
+
+/* Zusätzliche Stile für die moderne Form */
+.modern-form h1 {
+  color: #00b8d4;
+  margin-bottom: 20px;
+  text-align: center;
+}

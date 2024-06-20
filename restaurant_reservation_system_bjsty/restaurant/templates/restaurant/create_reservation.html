@@ -1,16 +1,38 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Reservierung erstellen</title>
-</head>
-<body>
+{% extends 'restaurant/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Reservierung erstellen</title>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'restaurant/style.css' %}" type="text/css">
+<style>
+    .modern-form h1 {
+        text-align: center;
+    }
+    .btn-submit {
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="modern-form">
     <h1>Reservierung bei {{ restaurant.name }}</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Reservierung bestätigen</button>
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                    <div class="error">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn-submit">Reservierung bestätigen</button>
     </form>
-    <a href="{% url 'restaurant_list' %}">Zurück zur Restaurantliste</a>
-</body>
-</html>
+    <a href="{% url 'restaurant_list' %}" class="back-link">Zurück zur Restaurantliste</a>
+</div>
+{% endblock %}
