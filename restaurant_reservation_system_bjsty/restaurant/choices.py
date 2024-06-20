@@ -34,3 +34,4 @@ class Choices:
         ('developer', 'Developer'),
         ('marketing', 'Marketing Team Member'),
     )
+    
