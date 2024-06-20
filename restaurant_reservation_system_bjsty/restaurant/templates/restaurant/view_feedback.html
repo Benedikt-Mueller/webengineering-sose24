@@ -1,72 +1,62 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Feedback for {{restaurant}}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #1a1a1a;
-            color: #f0f0f0;
-        }
-        h1 {
-            color: #ffffff;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            background-color: #333333;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        li:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-        h2 {
-            color: #00b8d4;
-            margin-top: 0;
-        }
-        p {
-            margin: 10px 0;
-            color: #cccccc;
-        }
-        .author {
-            font-style: italic;
-            color: #999999;
-        }
-        .no-feedback {
-            text-align: center;
-            color: #999999;
-        }
-    </style>
-</head>
-<body>
-    <h1>Feedback for {{restaurant}}</h1>
-   <ui>
+{% extends 'restaurant/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Feedback für {{ restaurant }}</title>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'restaurant/style.css' %}" type="text/css">
+<style>
+    .feedback-list {
+        list-style-type: none;
+        padding: 0;
+    }
+    .feedback-item {
+        background-color: #333333;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feedback-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+    .feedback-vote {
+        color: #00b8d4;
+        margin-top: 0;
+    }
+    .feedback-text {
+        color: #cccccc;
+    }
+    .feedback-author {
+        font-style: italic;
+        color: #999999;
+    }
+    .no-feedback {
+        text-align: center;
+        color: #999999;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="modern-form">
+    <h1>Feedback für {{ restaurant }}</h1>
+    <ul class="feedback-list">
         {% for feedback in feedbacks %}
-        <li>
-            <h2>{{feedback.get_vote_display}}</h2>
+        <li class="feedback-item">
+            <h2 class="feedback-vote">{{ feedback.get_vote_display }}</h2>
             <p>Begründung:</p>
-            <p>{{feedback.feedback}}</p>
-            <p class="author">Verfasst von: {{feedback.customer}}</p>
+            <p class="feedback-text">{{ feedback.feedback }}</p>
+            <p class="feedback-author">Verfasst von: {{ feedback.customer }}</p>
         </li>
         {% empty %}
-        <li class="no-feedback"><p>Noch keine Bewertungen da...</p></li>
+        <li class="feedback-item no-feedback"><p>Noch keine Bewertungen vorhanden...</p></li>
         {% endfor %}
-        <li>
-            <h2>4 Sterne</h2>
-            <p>Begründung:</p>
-            <p>Das Essen war ein Gedicht</p>
-            <p class="author">Verfasst von: John Geiken (johngeiken@outlook.com)</p>
-        </li>
-    </ui>
-</body>
-</html>
+    </ul>
+    <a href="{% url 'restaurant_list' %}" class="back-link">Zurück zur Restaurantliste</a>
+</div>
+{% endblock %}
