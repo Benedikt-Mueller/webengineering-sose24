@@ -27,11 +27,13 @@ def custom_data_input(request):
             statistik_typ = form.cleaned_data['statistik_typ']
             start = form.cleaned_data['startdatum']
             end = form.cleaned_data['enddatum']
+            location = form.cleaned_data['location']
+            restaurant = form.cleaned_data['restaurant']
             print("-------"+ statistik_typ + "---------")
             if(statistik_typ == 'res_tag'):
-                generateReservationGraph(start=start,end=end)
+                generateReservationGraph(start=start,end=end,location=location,givenRestaurant=restaurant)
             if(statistik_typ == 'res_timeslot'):
-                return None
+                generateTimeslotGraph(start=start,end=end)
             if(statistik_typ == 'feedback'):
                 return None
             # Logik für die Datenverarbeitung je nach statistik_typ
