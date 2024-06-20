@@ -40,7 +40,7 @@ def generateAgePlot():
     plt.close()
 
 def generateReservationGraph(location = None, start = None, end = None, givenRestaurant = None):
-
+    print(givenRestaurant)
     isCustom = False
     if(start is not None):
         start_datum = datetime.datetime.combine(start, datetime.time())
@@ -61,13 +61,13 @@ def generateReservationGraph(location = None, start = None, end = None, givenRes
     volle_datumsreihe_df = pd.DataFrame(datumsreihe, columns=['date'])
 
     # Daten beschaffen. Ist eine location angegeben, wird diese ebenfalls gefiltert:
-    if location is not None and location is not "":
+    if location is not None and location != "":
         reservierungen = Reservation.objects.filter(date_time__range = (start_datum,end_datum), restaurant__location=location).order_by('date_time')
         isCustom = True
     else:
         reservierungen = Reservation.objects.filter(date_time__range = (start_datum,end_datum)).order_by('date_time')
 
-    if givenRestaurant is not None and givenRestaurant is not "":
+    if givenRestaurant is not None and givenRestaurant != "":
         reservierungen = reservierungen.filter(restaurant__name__icontains=givenRestaurant)
         isCustom = True
     
@@ -95,9 +95,9 @@ def generateReservationGraph(location = None, start = None, end = None, givenRes
             d1 = start_datum.date()
             d2 = end_datum.date()
             title = 'Reservierungen vom ' + str(d1) + ' bis zum ' + str(d2)
-            if location is not None and location is not "":
+            if location is not None and location != "":
                 title = title + ' in ' + location
-            if givenRestaurant is not None and givenRestaurant is not "":
+            if givenRestaurant is not None and givenRestaurant != "":
                 title = title + ' bei ' + givenRestaurant
         plt.title(title)
         plt.xticks(rotation=45)  # Drehen Sie die Datumsbeschriftungen für bessere Lesbarkeit
@@ -114,6 +114,7 @@ def generateReservationGraph(location = None, start = None, end = None, givenRes
 
     #Existieren keine Daten, wird das "no data availabe"-PNG statt der Statistik angezeigt.
     else:
+        print("Empty")
         origin = os.path.join(settings.MEDIA_ROOT,'images/marketing/no_data.png')
         print(settings.MEDIA_ROOT)
         print(origin)
@@ -123,38 +124,83 @@ def generateReservationGraph(location = None, start = None, end = None, givenRes
 
     
 
-def generateTimeslotGraph():
-    #Dataframe laden:
-    queryset = Reservation.objects.all().values('date_time', 'party_size')
-    timeslot_bookings = pd.DataFrame(list(queryset))
-    timeslot_bookings['time_slot'] = timeslot_bookings['date_time'].apply(get_time_slot)
-    average_bookings = timeslot_bookings.groupby('time_slot')['party_size'].mean().reset_index()
-    average_bookings = average_bookings[average_bookings['time_slot'] != 'no_category']
-    #Zweiten Dataframe laden, damit auch leere Uhrzeiten angezeigt werden:
-    all_time_slots = pd.DataFrame({
-    'time_slot': ['06-10 Uhr','10-12 Uhr', '13-15 Uhr', '16-17 Uhr', '18-19 Uhr', '20-22 Uhr','23-06 Uhr']
-    })
-    #Beide Dfs verbinden:
-    average_bookings_complete = pd.merge(
-    all_time_slots,
-    average_bookings,
-    on='time_slot',
-    how='left'
-    )
-    #0 (Zahl) statt NaN einfügen:
-    average_bookings_complete['party_size'] = average_bookings_complete['party_size'].fillna(0)
+def generateTimeslotGraph(location = None, start = None, end = None, givenRestaurant = None):
 
-    # Seaborn / Matplotlib:
-    sns.barplot(x='time_slot', y='party_size', data=average_bookings_complete)
-    plt.xlabel('Zeitfenster')
-    plt.ylabel('Durchschnittliche Buchungsanzahl')
-    plt.title('Durchschnittliche Buchungsanzahlen nach Zeitfenster')
-    plt.xticks(rotation=45)
-    plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/timeslot_graph.png')
-    checkFolderExisting(plot_path)
-    plt.tight_layout()
-    plt.savefig(plot_path)
-    plt.close()
+    isCustom = False
+    if(start is not None):
+        start_datum = datetime.datetime.combine(start, datetime.time())
+        isCustom = True
+    else:
+        #Standardwert: 6 Wochen
+        start_datum = datetime.datetime.today() - datetime.timedelta(weeks=6)
+
+    if(end is not None):
+        end_datum = datetime.datetime.combine(end, datetime.time())
+        isCustom = True
+    else:
+        end_datum = datetime.datetime.today()
+
+    #Relevante Werte bestimmen:
+    queryset = Reservation.objects.all().values('date_time', 'party_size')
+    if(isCustom):
+        queryset = queryset.filter(date_time__range = (start_datum,end_datum), restaurant__location=location).order_by('date_time')
+        if location is not None and location != "":
+            queryset = queryset.filter(date_time__range = (start_datum,end_datum), restaurant__location=location).order_by('date_time')
+        if givenRestaurant is not None and location != "":
+            queryset = queryset.filter(restaurant__name__icontains=givenRestaurant)
+            
+
+    
+    #Dataframe laden:
+    timeslot_bookings = pd.DataFrame(list(queryset))
+    if not timeslot_bookings.empty:
+        timeslot_bookings['time_slot'] = timeslot_bookings['date_time'].apply(get_time_slot)
+        average_bookings = timeslot_bookings.groupby('time_slot')['party_size'].mean().reset_index()
+        average_bookings = average_bookings[average_bookings['time_slot'] != 'no_category']
+        #Zweiten Dataframe laden, damit auch leere Uhrzeiten angezeigt werden:
+        all_time_slots = pd.DataFrame({
+        'time_slot': ['06-10 Uhr','10-12 Uhr', '13-15 Uhr', '16-17 Uhr', '18-19 Uhr', '20-22 Uhr','23-06 Uhr']
+        })
+        #Beide Dfs verbinden:
+        average_bookings_complete = pd.merge(
+        all_time_slots,
+        average_bookings,
+        on='time_slot',
+        how='left'
+        )
+        #0 (Zahl) statt NaN einfügen:
+        average_bookings_complete['party_size'] = average_bookings_complete['party_size'].fillna(0)
+
+        # Seaborn / Matplotlib:
+        sns.barplot(x='time_slot', y='party_size', data=average_bookings_complete)
+        plt.xlabel('Zeitfenster')
+        plt.ylabel('Durchschnittliche Buchungsanzahl')
+
+        title = 'Durchschnittliche Buchungsanzahlen nach Zeitfenster'
+        if(isCustom):
+                d1 = start_datum.date()
+                d2 = end_datum.date()
+                title = 'Buchungen pro Zeitfenster vom ' + str(d1) + ' bis zum ' + str(d2)
+                if location is not None and location != "":
+                    title = title + ' in ' + location
+                if givenRestaurant is not None and givenRestaurant != "":
+                    title = title + ' bei ' + givenRestaurant
+
+        plt.title(title)
+        plt.xticks(rotation=45)
+        plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/timeslot_graph.png')
+        if(isCustom):
+                plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/custom.png')
+        checkFolderExisting(plot_path)
+        plt.tight_layout()
+        plt.savefig(plot_path)
+        plt.close()
+    else:
+        origin = os.path.join(settings.MEDIA_ROOT,'images/marketing/no_data.png')
+        print(settings.MEDIA_ROOT)
+        print(origin)
+        destination = os.path.join(settings.MEDIA_ROOT,'images/marketing/custom.png')
+        shutil.copy2(origin, destination)
 
 def generateSeasonGraph():
     # Import:
