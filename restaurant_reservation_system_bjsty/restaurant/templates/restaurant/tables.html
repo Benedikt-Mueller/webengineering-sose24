@@ -1,70 +1,42 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Prüfen Sie die Verfügbarkeit von Tischen in {{ restaurant.name }}">
-    <title>Verfügbarkeit von Tischen - {{ restaurant.name }}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f8f9fa;
-            color: #333;
-        }
-        h1 {
-            color: #007bff;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            background-color: #ffffff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        li:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-        .table-info {
-            flex-grow: 1;
-        }
-        .availability {
-            font-weight: bold;
-            text-align: right;
-        }
-        .available {
-            color: #28a745;
-        }
-        .reserved {
-            color: #dc3545;
-        }
-        .location {
-            color: #6c757d;
-        }
-        .summary {
-            margin: 20px 0;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
+{% extends 'restaurant/base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Verfügbarkeit von Tischen - {{ restaurant.name }}</title>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'restaurant/style.css' %}" type="text/css">
+<style>
+    .table-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #444; /* Trennlinie zwischen den Tischen */
+        padding: 15px 0; /* Zusätzlicher Abstand oben und unten */
+    }
+    .table-item:last-child {
+        border-bottom: none; /* Entfernt die Trennlinie für das letzte Element */
+    }
+    .table-info {
+        flex-grow: 1;
+    }
+    .availability {
+        text-align: right;
+    }
+    .available { color: #28a745; }
+    .reserved { color: #dc3545; }
+    .location { color: #6c757d; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="modern-form">
     <h1>Verfügbarkeit der Tische im {{ restaurant.name }}</h1>
     <div id="summary" class="summary"></div>
-    <ul id="tableList">
+    <ul id="tableList" class="list-unstyled">
         {% for table in tables %}
-        <li id="table{{ table.number }}">
+        <li id="table{{ table.number }}" class="list-item table-item">
             <div class="table-info">
                 <span>Tischnummer: {{ table.number }}</span><br>
                 <span>Kapazität: {{ table.capacity }}</span><br>
@@ -75,49 +47,45 @@
                     <span class="reserved" aria-label="Reserviert">Reserviert</span>
                 {% else %}
                     <span class="available" aria-label="Verfügbar">Verfügbar</span>
-                    <button onclick="reserveTable('{{ table.number }}', '{{ table.capacity }}')"
+                    <button class="btn-primary" onclick="reserveTable('{{ table.number }}', '{{ table.capacity }}')"
                      aria-label="Tisch reservieren">Reservieren</button>
                 {% endif %}
             </div>
         </li>
         {% endfor %}
     </ul>
+    <a href="{% url 'restaurant_list' %}" class="back-link">Zurück zur Restaurantliste</a>
+</div>
 
-    <script>
-        function updateSummary() {
-            const tables = document.querySelectorAll('#tableList li');
-            let availableTables = 0;
-            let totalCapacity = 0;
+<script>
+    // JavaScript-Code bleibt unverändert
+    function updateSummary() {
+        const tables = document.querySelectorAll('#tableList li');
+        let availableTables = 0;
+        let totalCapacity = 0;
 
-            tables.forEach(table => {
-                const isAvailable = table.querySelector('.available');
-                if (isAvailable) {
-                    availableTables++;
-                    totalCapacity += parseInt(table.querySelector('.table-info span:nth-child(2)').innerText.split(': ')[1]);
-                }
-            });
-
-            const summary = document.getElementById('summary');
-            summary.innerHTML = `Es sind noch ${availableTables} Tische verfügbar. Insgesamt ${totalCapacity} Personen können noch reservieren.`;
-        }
-
-        function reserveTable(tableNumber, capacity) {
-            // Hier könnte eine AJAX-Anfrage an den Server gesendet werden, um die Reservierung zu speichern
-            alert(`Tisch ${tableNumber} mit Kapazität ${capacity} erfolgreich reserviert!`);
-
-            // Aktualisiere die Verfügbarkeit des Tisches im DOM
-            const tableElement = document.getElementById(`table${tableNumber}`);
-            if (tableElement) {
-                const availabilityElement = tableElement.querySelector('.availability');
-                availabilityElement.innerHTML = `<span class="reserved" aria-label="Reserviert">Reserviert</span>`;
+        tables.forEach(table => {
+            const isAvailable = table.querySelector('.available');
+            if (isAvailable) {
+                availableTables++;
+                totalCapacity += parseInt(table.querySelector('.table-info span:nth-child(2)').innerText.split(': ')[1]);
             }
+        });
 
-            // Aktualisiere die Anzeige der verbleibenden Tische und Kapazitäten
-            updateSummary();
+        const summary = document.getElementById('summary');
+        summary.innerHTML = `Es sind noch ${availableTables} Tische verfügbar. Insgesamt ${totalCapacity} Personen können noch reservieren.`;
+    }
+
+    function reserveTable(tableNumber, capacity) {
+        alert(`Tisch ${tableNumber} mit Kapazität ${capacity} erfolgreich reserviert!`);
+        const tableElement = document.getElementById(`table${tableNumber}`);
+        if (tableElement) {
+            const availabilityElement = tableElement.querySelector('.availability');
+            availabilityElement.innerHTML = `<span class="reserved" aria-label="Reserviert">Reserviert</span>`;
         }
+        updateSummary();
+    }
 
-        // Initiale Zusammenfassung aktualisieren
-        document.addEventListener('DOMContentLoaded', updateSummary);
-    </script>
-</body>
-</html>
+    document.addEventListener('DOMContentLoaded', updateSummary);
+</script>
+{% endblock %}
