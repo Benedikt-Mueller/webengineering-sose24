@@ -10,8 +10,9 @@ def customer_data_view(request):
 
     #Statistiken erstellen (bei Performanceproblemen sollte man diesen Schritt zeitgestuert als Cronjob [oder Windows-Equivalent] ausführen, aber dann können Daten veraltet sein):
     generateAgePlot()
-    generateReservationGraph(8,"Lübeck")
+    generateReservationGraph()
     generateTimeslotGraph()
     generateDiningPreferencePlot()
+    generateSeasonGraph()
     #Template anzeigen:++
     return render(request, 'marketing/customer_data.html')

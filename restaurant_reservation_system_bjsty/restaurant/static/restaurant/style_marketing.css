@@ -1,0 +1,160 @@
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: white;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Layout für die gesamte Seite */
+.page-layout {
+    display: flex;
+    height: 100vh;
+}
+
+/* Stil für die linke Navigationsleiste */
+.sidebar {
+    width: 15%;
+    background-color: #005a36; /* Dunkelgrün */
+    color: white;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+}
+.sidebar ul{
+    list-style-type: none;
+    padding: 0; /* Entfernt das linke Padding/Innenabstand */
+    margin: 2px; /* Entfernt den Außenabstand */
+    text-align: left;
+    font-size:large;
+}
+
+.sidebar a:hover {
+    background-color: #003d26; /* Etwas dunkleres Grün für Hover-Zustand */
+}
+
+/* Inhaltsbereich rechts neben der Navigationsleiste */
+.first-content-area {
+    flex-grow: 1;
+    padding: 0;
+    background-color: #f0f0f0; /* Hintergrundfarbe des Inhaltsbereichs */
+    overflow: auto;
+}
+.second-content-area {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #f0f0f0; /* Hintergrundfarbe des Inhaltsbereichs */
+    overflow: auto;
+}
+
+/* Weitere Stile: */
+
+.topbar{
+    color:#ffffff;
+    background-color: #0b8000; /*Etwas anderes Grünn zur visuellen Unterscheidung*/
+    padding:0;
+    border:0;
+    flex-grow: 1;
+    overflow: auto;
+
+}
+.topbar h1 {
+    margin: 0;
+    padding: 20px 20px; 
+    text-align: center;
+}
+
+.button {
+    display: inline-block;
+    background-color: #005a36; /* Dunkelgrün */
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.button:hover,
+.button:focus {
+    background-color: #003d26; /* Etwas dunkleres Grün für Hover-Zustand */
+}
+
+.statistic-container {
+    position: relative;
+    max-width: 95%; /* Max-Breite des Slideshow-Containers */
+    margin: auto;
+    align-items: center;
+    justify-content: center;
+    display:flex
+}
+
+.statistic-item {
+    display: none; /* Versteckt alle Slides standardmäßig */
+    align-items: center;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    padding:10px;
+    width:75%;
+    
+}
+.statistic-item h2 {
+    font-size: 1.5rem;
+    color: #333;
+}
+.statistic-item img {
+    max-width: 100%;
+    height: auto;
+    margin:auto;
+    align-items: center;
+    display:flex;
+    border:2px solid green;
+}
+
+
+.fade {
+    animation-name: fade;
+    animation-duration: 1.5s;
+  }
+  
+  @keyframes fade {
+    from {opacity: .4} 
+    to {opacity: 1}
+  }
+  
+  /* Navigationsbuttons */
+  .prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -22px;
+    padding: 16px;
+    color: rgb(18, 94, 3);
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+    z-index: 1000;
+  }
+  
+  .next {
+    right: 0;
+    border-radius: 3px 0 0 3px;
+  }
+  
+  .prev:hover, .next:hover {
+    background-color: rgba(0,0,0,0.8);
+  }
