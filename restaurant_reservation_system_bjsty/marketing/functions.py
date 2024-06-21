@@ -59,7 +59,6 @@ def generateReservationGraph(location = None, start = None, end = None, givenRes
     # Erstellung einer Datumsreihe von start_datum bis end_datum
     datumsreihe = pd.date_range(start=start_datum, end=end_datum).date
     volle_datumsreihe_df = pd.DataFrame(datumsreihe, columns=['date'])
-    print(str(location)+str(start)+str(end)+str(givenRestaurant)+str(givenSegment))
 
     # Daten beschaffen. Ist eine location angegeben, wird diese ebenfalls gefiltert:
     if location is not None and location != "":
@@ -76,7 +75,6 @@ def generateReservationGraph(location = None, start = None, end = None, givenRes
         isCustom = True
         try:
             reservierungen = reservierungen.filter(customer__age__gte = segment[0], customer__age__lte = segment[1])
-            print(reservierungen)
         except:
             noData('images/marketing/feedback_plot.png',isCustom)
             return 
@@ -84,7 +82,6 @@ def generateReservationGraph(location = None, start = None, end = None, givenRes
     graph = pd.DataFrame(list(reservierungen.values('date_time', 'customer', 'restaurant', 'party_size', 'special_requests', 'status')))
     vollstaendiger_df = None #Variable im lokalen Kontext bekanntmachen
     if graph.empty:
-        print("no data function called")
         noData('images/marketing/reservation_graph.png', isCustom)
         return
     # Konvertieren Sie `date_time` zu nur einem Datum (ohne Zeit)
@@ -159,7 +156,6 @@ def generateTimeslotGraph(location = None, start = None, end = None, givenRestau
         isCustom = True
         try:
             queryset = queryset.filter(customer__age__gte = segment[0], customer__age__lte = segment[1])
-            print(queryset)
         except:
             noData('images/marketing/feedback_plot.png',isCustom)
             return 
@@ -273,7 +269,6 @@ def generateDiningPreferencePlot():
     
 def generateFeedbackPlot(givenRestaurant=None, isCustom=False, givenSegment = None):
     # Import:
-    #queryset = Feedback.objects.values('vote','customer').annotate(count=Count('vote'))
     queryset = Feedback.objects.all()
     
     if givenRestaurant is not None and givenRestaurant != "":
@@ -288,8 +283,8 @@ def generateFeedbackPlot(givenRestaurant=None, isCustom=False, givenSegment = No
         except:
             noData('images/marketing/feedback_plot.png',isCustom)
             return 
+    #Für Verarbeitung vorbereiten und Häufigkeit zählen
     queryset = queryset.values('vote').annotate(count=Count('vote'))
-    print(queryset)
     ratingFrame = pd.DataFrame(list(queryset))
     
     #Leeren DataFrame abfangen:

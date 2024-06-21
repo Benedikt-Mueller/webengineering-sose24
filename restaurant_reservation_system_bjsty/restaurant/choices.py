@@ -11,6 +11,17 @@ class Choices:
         ('indian' , 'Indische Küche'),
         ('asian' , 'Asiatische Küche'),
     )
+    
+    PREFERENCE_SEARCH_CHOICES = (
+        ('','Keine Auswahl'),
+        ('international' , 'Internationale Küche'),
+        ('german' , 'Deutsche Küche'),
+        ('danish' , 'Dänische Küche'),
+        ('italian' , 'Italienische Küche'),
+        ('american' , 'Amerikanische Küche'),
+        ('indian' , 'Indische Küche'),
+        ('asian' , 'Asiatische Küche'),
+    )
 
     VOTE_CHOICES = (
         ('one_star', '1/5'),

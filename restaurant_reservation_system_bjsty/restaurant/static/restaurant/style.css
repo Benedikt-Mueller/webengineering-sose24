@@ -35,6 +35,11 @@ nav ul li a:hover, nav ul li a:focus {
   background-color: #555;
 }
 
+.mcontent{
+  padding:2%;
+}
+
+
 /* Modernisierte Formularstile */
 .form, .modern-form {
   background-color: #262626;
@@ -115,6 +120,23 @@ input[type="submit"]:hover,
 .btn-submit:hover {
   background-color: #0097a7;
   outline: none;
+}
+
+.lbutton{
+  display: inline-block;
+  color: white !important;
+  text-align: center;
+  background-color: #00b8d4;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.lbutton a{
+  color: white !important;
 }
 
 .back-link {

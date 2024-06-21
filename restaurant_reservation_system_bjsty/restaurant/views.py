@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from .models import *
-from django.http import HttpResponse, Http404, JsonResponse
+from django.http import HttpResponseForbidden, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import UserForm, ProfileForm
@@ -103,7 +103,7 @@ def create_reservation(request, restaurant_id):
     return render(request, 'restaurant/create_reservation.html', {'form': form, 'restaurant': restaurant})
 
 @login_required
-def profile_view(request):
+def startpage_view(request):
     userprofile = get_object_or_404(UserProfile, user = request.user)
     if userprofile.role == "owner":
             return redirect('owner_view')
@@ -112,6 +112,12 @@ def profile_view(request):
     else:
         diningPreferences = DiningPreference.objects.filter(customer=userprofile)
         return render(request, 'restaurant/profile_view.html', {'user':request.user, 'userprofile':userprofile,'preferences':diningPreferences })
+
+@login_required
+def profile_view(request):
+    userprofile = get_object_or_404(UserProfile, user = request.user)
+    diningPreferences = DiningPreference.objects.filter(customer=userprofile)
+    return render(request, 'restaurant/profile_view.html', {'user':request.user, 'userprofile':userprofile,'preferences':diningPreferences })
 
 @login_required
 def create_feedback(request, restaurant_id):
@@ -385,6 +391,8 @@ def login_view(request):
                 login(request, user)
                 # Weiterleitung zur Startseite oder einer anderen Seite
                 next_page = request.POST.get('next', 'restaurant_list')
+                get_page = request.GET.get('next', 'restaurant_list')
+                if(get_page != 'restaurant_list'): next_page = get_page
                 return redirect(next_page)
             else:
                 messages.error(request, 'Ungültige Anmeldedaten.')
@@ -395,6 +403,9 @@ def login_view(request):
 @login_required
 def owner_view(request):
     currentUser = get_object_or_404(UserProfile, user=request.user)
+    print(str(currentUser.role))
+    if(currentUser.role != 'owner' and currentUser.role != 'developer' and currentUser.role != 'admin'):
+        return redirect('staff_view')
     restaurants = Restaurant.objects.filter(owner=currentUser)
     return render(request, 'restaurant/owner_view.html', {'restaurants':restaurants})
 
@@ -402,6 +413,8 @@ def owner_view(request):
 def staff_view(request):
     currentUser = get_object_or_404(UserProfile, user=request.user)
     restaurants = Restaurant.objects.filter(owner=currentUser)
+    if(currentUser.role != 'owner' and currentUser.role != 'developer' and currentUser.role != 'staff' and currentUser.role != 'admin'):
+         return HttpResponseForbidden("Zugriff verweigert: Sie verfügen nicht über die nötigt Berechtigung, um dieses System zu nutzen!") 
     return render(request, 'restaurant/staff_view.html', {'restaurants':restaurants})
 
 @login_required

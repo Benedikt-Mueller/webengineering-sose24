@@ -2,6 +2,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Profile
+from .choices import Choices
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -104,7 +105,7 @@ class DiningPreferenceForm(forms.Form):
  # Suchfunktion   
 class SearchForm(forms.Form):
     location = forms.CharField(required=False, label='Ort')
-    cuisine = forms.CharField(required=False, label='Küche')
+    cuisine = forms.ChoiceField(required=False, label='Küche', choices = Choices.PREFERENCE_SEARCH_CHOICES)
     capacity = forms.IntegerField(required=False, label='Mindestkapazität', min_value=1)
 
     # Keine Initialisierungsmethode erforderlich, da wir die Standardfunktionen von Django Forms verwenden.  

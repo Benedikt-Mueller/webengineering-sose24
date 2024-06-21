@@ -1,9 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
+{%extends 'restaurant/base.html'%}
+{%block title%}
     <title>Mein Account</title>
-</head>
-<body>
+{%endblock%}
+{%block content%}
+<div class="mcontent">
     <h1>Mein Account</h1>
     <p>Willkommen {{user.first_name}} {{user.last_name}}!</p>
     <h2>Ihre Informationen: </h2>
@@ -12,18 +12,18 @@
     <li>Nachname: {{user.last_name}}</li>
     <li>Benutzername {{user.username}}</li>
     <li>E-Mail: {{user.email}}</li>
-    <li>Rolle: {{userprofile.role}}</li>
+    <li>Rolle: {{userprofile.get_role_display}}</li>
     </ul>
 
     <h2>Ihre bevorzugten Küchen: </h2>
     <ul>
     {%for preference in preferences %}
-        <li>{{preference.preferences}}</li>
+        <li>{{preference.get_preferences_display}}</li>
     {%empty%}
         <li>Sie haben keine Vorlieben ausgewählt</li>
     {%endfor%}
-    <a href="{% url 'restaurant_list' %}">Vorlieben eingeben</a>
+    <br>
+    <a href="{% url 'restaurant_list' %}" class="lbutton">Vorlieben eingeben</a>
     </ul>
-
-</body>
-</html>
+</div>
+{%endblock%}

@@ -37,6 +37,8 @@ urlpatterns = [
     path('restaurant/<int:pk>/', views.restaurant_detail, name='restaurant_detail'),
     #Profile:
     path('profile/', views.profile_view, name='profile_view'),
+    path('startpage/', views.startpage_view, name='startpage_view'),
     path('owner_view/', views.owner_view, name='owner_view'),
+    path('staff_view/', views.staff_view, name='staff_view'),
     path('logout/', views.logout_view, name='logout'),
 ]
