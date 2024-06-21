@@ -54,11 +54,27 @@ def createUser(request):
         'profile_form': profile_form
     })
 
-
+"""
 def restaurant_list(request):
     restaurants = Restaurant.objects.all()
     return render(request, 'restaurant/restaurant_list.html', {'restaurants': restaurants})
-  
+  """
+def restaurant_list(request):
+    form = SearchForm(request.GET or None)
+    restaurants = Restaurant.objects.all()
+
+    if form.is_valid():
+        if form.cleaned_data['location']:
+            restaurants = restaurants.filter(location__icontains=form.cleaned_data['location'])
+        if form.cleaned_data['cuisine']:
+            restaurants = restaurants.filter(cuisine__icontains=form.cleaned_data['cuisine'])
+        if form.cleaned_data['capacity']:
+            restaurants = restaurants.filter(capacity__gte=form.cleaned_data['capacity'])
+
+    return render(request, 'restaurant/restaurant_list.html', {
+        'restaurants': restaurants,
+        'form': form
+    })
 
 def restaurant_menu(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
