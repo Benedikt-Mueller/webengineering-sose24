@@ -140,7 +140,7 @@ EMAIL_HOST_USER = 'bjesty@m3rk.eu'
 EMAIL_PORT = 587
 EMAIL_USE_SSL = False
 #Passwort: R3st4ur4ntSystem9476
-EMAIL_HOST_PASSWORD = 'SeeNoticeForPassword'
+EMAIL_HOST_PASSWORD = 'PutPasswordFromMail'
 
 #Bilder:
 MEDIA_URL = '/media/'

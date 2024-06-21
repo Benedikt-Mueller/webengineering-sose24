@@ -117,3 +117,11 @@ class Feedback(models.Model):
     feedback = models.TextField(blank=True)
     def __str__(self):
         return ("Bewertung für " + str(self.restaurant) + " von " + str(self.customer))
+    
+class ReservationTableLink(models.Model):
+    reservation = models.ForeignKey(Reservation,on_delete=models.CASCADE)
+    table = models.ForeignKey(Table,on_delete=models.CASCADE)
+    date = models.DateField()
+    
+    def __str__(self):
+        return("Link zwischen "+str(self.reservation) + " und " + str(self.table))

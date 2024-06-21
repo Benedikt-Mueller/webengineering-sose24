@@ -7,7 +7,14 @@
   {% csrf_token %}
   <button type="submit" name="auto_assign">Automatisch Tische zuweisen</button>
 </form>
-
+<br>
+<form method="post">
+  {% csrf_token %}
+  <label for="dateInput">Wählen Sie ein Datum:</label>
+  <input type="date" id="dateInput" name="dateInput">
+  <input type="submit" value="Absenden" name='dateButton'>
+</form>
+<br>
 <form method="post">
   {% csrf_token %}
   <table>

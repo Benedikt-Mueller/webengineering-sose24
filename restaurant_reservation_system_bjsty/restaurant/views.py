@@ -177,15 +177,31 @@ def dining_preference(request):
 
        return render(request, 'restaurant/manage_preferences.html', {'form': form})
 
-# manage_reservation #
-def auto_assign_tables(reservations, tables):
+# ---- Reservations: ---- #
+def auto_assign_tables(reservations, tables, request_date):
+    reservations = reservations.order_by('party_size')
+    tables = tables.order_by('capacity')
+    isPossible = False
     for reservation in reservations:
-        if not reservation.table:
-            available_tables = [table for table in tables if table.capacity >= reservation.party_size and not table.reservation_set.filter(date_time__date=reservation.date_time.date()).exists()]
-            if available_tables:
-                reservation.table = available_tables[0]
+        for table in tables:
+            if table.capacity >= reservation.party_size:
+                reservation_table_link = ReservationTableLink(
+                        reservation=reservation,
+                        table=table,
+                        date=request_date
+                    )
+                reservation_table_link.save()
+                reservation.status = 'confirmed'
                 reservation.save()
-
+                isPossible = True
+                break
+        if isPossible == False:
+            reservation.status = "cancelled"
+            reservation.save()
+        isPossible = False
+    
+    
+        
 
 @login_required
 def manage_reservations(request, restaurant_id, date=None):
@@ -194,44 +210,59 @@ def manage_reservations(request, restaurant_id, date=None):
         request_date =  timezone.now().date()
     else:
         request_date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
-    reservations = Reservation.objects.filter(restaurant=restaurant, date_time__date=request_date)
+    reservations = Reservation.objects.filter(restaurant=restaurant, date_time__date=request_date,status = 'pending')
     tables = Table.objects.filter(restaurant=restaurant)
+    for table in tables:
+        blockedTableLink = ReservationTableLink.objects.filter(table=table, date=request_date).first()
+        if blockedTableLink:
+            blockedTable = blockedTableLink.table
+            pk = blockedTable.pk
+            tables = tables.exclude(pk = pk)
+            print(tables)
 
     if request.method == 'POST':
         if 'auto_assign' in request.POST:
-            auto_assign_tables(reservations, tables)
-            return redirect('manage_reservations', restaurant_id=restaurant_id, date=date.strftime("%Y-%m-%d"))
+            auto_assign_tables(reservations, tables, request_date)
+            return redirect('owner_view')
+        if 'dateButton' in request.POST:
+            postDate = request.POST.get('dateInput',None)
+            if (postDate is None) or (postDate == ""):
+                return redirect('manage_reservations', restaurant_id=restaurant_id)
+            else:
+                return redirect(reverse('manage_reservations_by_date',args=(restaurant_id,postDate)))
         else:
             for key, value in request.POST.items():
                 if key.startswith('table-'):
                     reservation_id = int(key.split('-')[1])
                     table_id = int(value)
+                    table = get_object_or_404(Table,pk=table_id)
                     reservation = get_object_or_404(Reservation, pk=reservation_id)
-                    reservation.table = get_object_or_404(Table, pk=table_id)
-                    reservation.save()
-            return redirect('manage_reservations', restaurant_id=restaurant_id, date=date.strftime("%Y-%m-%d"))
+                    reservation.status = 'confirmed'
+                    reservation_table_link = ReservationTableLink(
+                        reservation=reservation,
+                        table=table,
+                        date=request_date
+                    )
+                    print('----------------------')
+                    print(reservation)
+                    print(table)
+                    print(reservation)
+                    if table.capacity >= reservation.party_size:
+                        reservation_table_link.save()
+                        reservation.save()
+                    else:
+                        reservation.status = 'cancelled'
+                        reservation.save()
+                    
+            return redirect('owner_view')
 
-    return render(request, 'restaurant/manage_reservations.html', {
+    else:
+        return render(request, 'restaurant/manage_reservations.html', {
         'restaurant': restaurant,
         'reservations': reservations,
         'tables': tables,
         'selected_date': request_date
-    })
-#Suchfunktion
-""""
-def search_restaurants(request):
-    form = SearchForm(request.GET or None)
-    if form.is_valid():
-        results = Restaurant.objects.all()
-        if form.cleaned_data['location']:
-            results = results.filter(location__icontains=form.cleaned_data['location'])
-        if form.cleaned_data['cuisine']:
-            results = results.filter(cuisine__icontains=form.cleaned_data['cuisine'])
-        if form.cleaned_data['capacity']:
-            results = results.filter(capacity__gte=form.cleaned_data['capacity'])
-    else:
-        results = None
-"""
+        })
 
 def search_restaurants(request):
     form = SearchForm(request.GET or None)
@@ -273,6 +304,8 @@ def adjust_reservation(request, reservation_id):
             temp_reservation = form.save(commit=False)
             # Setzt den Status auf "Pending"
             temp_reservation.status = 'pending'  
+            link = ReservationTableLink.objects.filter(reservation=temp_reservation).first()
+            link.delete()
             temp_reservation.save()
             send_confirmation_email(reservation)
             return redirect('view_reservation', reservation_id=reservation.id)
