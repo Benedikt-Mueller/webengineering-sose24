@@ -1,44 +1,46 @@
-{%extends 'restaurant/base.html'%}
-{%load static%}
-{%block title%}
-<title>Restaurant List</title>
-{%endblock%}
-{%block extra_css%}
-    <link rel="stylesheet" href="{% static 'restaurant/list_style.css' %}" type="text/css"><!--Custom template styles for the restaurant list-->
-{%endblock%}
+{% extends 'restaurant/base.html' %}
+{% load static %}
 
-{%block content%}
-    <div class="restaurant-list">
-        <script type="text/javascript">
-            window.addEventListener('DOMContentLoaded', (event) => {
-                const messagesContainer = document.getElementById('messages');
-                if (messagesContainer) {
-                    const messages = messagesContainer.querySelectorAll('p');
-                    messages.forEach((msg) => {
-                        alert(msg.textContent); // Zeigt jede Nachricht in einem separaten Alert-Dialog an
-                    });
-                }
-            });
-        </script>
-        <h1>Restaurants</h1>
-        <ul>
-            {% for restaurant in restaurants %}
-            <li>
-                <h2>
-                    <a href="{% url 'restaurant_menu' restaurant.id %}">{{ restaurant.name }}</a>
-                    <span class="menu-label">Menü</span>
-                </h2>
-                <p>Standort: {{ restaurant.location }}</p>
-                <p>Küche: {{ restaurant.get_cuisine_display }}</p>
-                <p>Beschreibung: {{ restaurant.description }}</p>
-                <p>Öffnungszeiten: {{ restaurant.opening_hours }}</p>
-                <p>Kontaktinformationen: {{ restaurant.contact_info }}</p>
-                <p><a href="{% url 'view_tables' restaurant.id %}">Verfügbarkeit prüfen</a></p>
-                <p><a href="{% url 'create_reservation' restaurant.id %}">Reservierung erstellen</a></p>
-                <p><a href="{% url 'create_feedback' restaurant.id %}">Restaurant bewerten</a></p>
-                <p><a href="{% url 'view_feedback' restaurant.id %}">Bewertungen für dieses Restaurant ansehen</a></p>
-            </li>
-            {% endfor %}
-        </ul>
+{% block title %}
+<title>Restaurant List</title>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'restaurant/list_style.css' %}" type="text/css">
+{% endblock %}
+
+{% block content %}
+<div class="restaurant-list">
+    <h1>Restaurants</h1>
+
+    <!-- Suchformular -->
+    <div class="search-form">
+        <h2>Suche nach Restaurants</h2>
+        <form method="get">
+            {{ form.as_p }}
+            <button type="submit">Suchen</button>
+        </form>
     </div>
-{%endblock%}
+
+    <!-- Ergebnisliste -->
+    <ul>
+        {% for restaurant in restaurants %}
+        <li>
+            <h2>
+                <a href="{% url 'restaurant_menu' restaurant.id %}">{{ restaurant.name }}</a>
+                <span class="menu-label">Menü</span>
+            </h2>
+            <p>Standort: {{ restaurant.location }}</p>
+            <p>Küche: {{ restaurant.get_cuisine_display }}</p>
+            <p>Beschreibung: {{ restaurant.description }}</p>
+            <p>Öffnungszeiten: {{ restaurant.opening_hours }}</p>
+            <p>Kontaktinformationen: {{ restaurant.contact_info }}</p>
+            <p><a href="{% url 'view_tables' restaurant.id %}">Verfügbarkeit prüfen</a></p>
+            <p><a href="{% url 'create_reservation' restaurant.id %}">Reservierung erstellen</a></p>
+            <p><a href="{% url 'create_feedback' restaurant.id %}">Restaurant bewerten</a></p>
+            <p><a href="{% url 'view_feedback' restaurant.id %}">Bewertungen für dieses Restaurant ansehen</a></p>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
