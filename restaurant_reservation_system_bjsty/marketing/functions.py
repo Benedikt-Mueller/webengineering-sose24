@@ -1,4 +1,4 @@
-from restaurant.models import UserProfile,Restaurant,Reservation,DiningPreference
+from restaurant.models import UserProfile,Restaurant,Reservation,DiningPreference,Feedback
 from restaurant.choices import Choices
 from django.db.models import Count
 import matplotlib
@@ -40,7 +40,6 @@ def generateAgePlot():
     plt.close()
 
 def generateReservationGraph(location = None, start = None, end = None, givenRestaurant = None):
-    print(givenRestaurant)
     isCustom = False
     if(start is not None):
         start_datum = datetime.datetime.combine(start, datetime.time())
@@ -74,52 +73,45 @@ def generateReservationGraph(location = None, start = None, end = None, givenRes
     # Erstellen Sie ein DataFrame mit den Daten
     graph = pd.DataFrame(list(reservierungen.values('date_time', 'customer', 'restaurant', 'party_size', 'special_requests', 'status')))
     vollstaendiger_df = None #Variable im lokalen Kontext bekanntmachen
-    if not graph.empty:
-        # Konvertieren Sie `date_time` zu nur einem Datum (ohne Zeit)
-        graph['date'] = graph['date_time'].dt.date
-        # Gruppieren Sie die Daten nach dem Datum und zählen Sie die Anzahl der Reservierungen pro Tag
-        reservierungen_pro_tag = graph.groupby('date').size()
-        # Reset index, um das Datum als separate Spalte zu haben
-        reservierungen_pro_tag = reservierungen_pro_tag.reset_index(name='Anzahl der Reservierungen')
-        vollstaendiger_df = pd.merge(volle_datumsreihe_df, reservierungen_pro_tag, on='date', how='left').fillna(0)
-        vollstaendiger_df['Anzahl der Reservierungen'] = vollstaendiger_df['Anzahl der Reservierungen'].astype(int)
-        # Erstellen Sie ein Liniendiagramm
-        plt.figure(figsize=(10, 6))
-        sns.lineplot(x='date', y='Anzahl der Reservierungen', data=vollstaendiger_df)
+    if graph.empty:
+        noData('images/marketing/reservation_graph.png')
+        return
+    # Konvertieren Sie `date_time` zu nur einem Datum (ohne Zeit)
+    graph['date'] = graph['date_time'].dt.date
+    # Gruppieren Sie die Daten nach dem Datum und zählen Sie die Anzahl der Reservierungen pro Tag
+    reservierungen_pro_tag = graph.groupby('date').size()
+    # Reset index, um das Datum als separate Spalte zu haben
+    reservierungen_pro_tag = reservierungen_pro_tag.reset_index(name='Anzahl der Reservierungen')
+    vollstaendiger_df = pd.merge(volle_datumsreihe_df, reservierungen_pro_tag, on='date', how='left').fillna(0)
+    vollstaendiger_df['Anzahl der Reservierungen'] = vollstaendiger_df['Anzahl der Reservierungen'].astype(int)
+    # Erstellen Sie ein Liniendiagramm
+    plt.figure(figsize=(10, 6))
+    sns.lineplot(x='date', y='Anzahl der Reservierungen', data=vollstaendiger_df)
 
-        # Setzen Sie die Beschriftungen und Titel
-        plt.xlabel('Datum')
-        plt.ylabel('Anzahl der Reservierungen')
-        title = 'Reservierungen der letzten 6 Wochen pro Tag'
-        if(isCustom):
-            d1 = start_datum.date()
-            d2 = end_datum.date()
-            title = 'Reservierungen vom ' + str(d1) + ' bis zum ' + str(d2)
-            if location is not None and location != "":
-                title = title + ' in ' + location
-            if givenRestaurant is not None and givenRestaurant != "":
-                title = title + ' bei ' + givenRestaurant
-        plt.title(title)
-        plt.xticks(rotation=45)  # Drehen Sie die Datumsbeschriftungen für bessere Lesbarkeit
+    # Setzen Sie die Beschriftungen und Titel
+    plt.xlabel('Datum')
+    plt.ylabel('Anzahl der Reservierungen')
+    title = 'Reservierungen der letzten 6 Wochen pro Tag'
+    if(isCustom):
+        d1 = start_datum.date()
+        d2 = end_datum.date()
+        title = 'Reservierungen vom ' + str(d1) + ' bis zum ' + str(d2)
+        if location is not None and location != "":
+            title = title + ' in ' + location
+        if givenRestaurant is not None and givenRestaurant != "":
+            title = title + ' bei ' + givenRestaurant
+    plt.title(title)
+    plt.xticks(rotation=45)  # Drehen Sie die Datumsbeschriftungen für bessere Lesbarkeit
 
-        # Zeigen Sie das Diagramm an
-        plt.tight_layout()
-        plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/reservation_graph.png')
-        if(isCustom):
-            plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/custom.png')
- 
-        checkFolderExisting(plot_path)
-        plt.savefig(plot_path)
-        plt.close()
+    # Zeigen Sie das Diagramm an
+    plt.tight_layout()
+    plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/reservation_graph.png')
+    if(isCustom):
+        plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/custom.png')
 
-    #Existieren keine Daten, wird das "no data availabe"-PNG statt der Statistik angezeigt.
-    else:
-        print("Empty")
-        origin = os.path.join(settings.MEDIA_ROOT,'images/marketing/no_data.png')
-        print(settings.MEDIA_ROOT)
-        print(origin)
-        destination = os.path.join(settings.MEDIA_ROOT,'images/marketing/reservation_graph.png')
-        shutil.copy2(origin, destination)
+    checkFolderExisting(plot_path)
+    plt.savefig(plot_path)
+    plt.close()
     
 
     
@@ -146,74 +138,63 @@ def generateTimeslotGraph(location = None, start = None, end = None, givenRestau
         queryset = queryset.filter(date_time__range = (start_datum,end_datum)).order_by('date_time')
         if location is not None and location != "":
             queryset = queryset.filter(date_time__range = (start_datum,end_datum), restaurant__location=location).order_by('date_time')
-            print("Location found!")
         if givenRestaurant is not None and givenRestaurant != "":
             queryset = queryset.filter(restaurant__name__icontains=givenRestaurant)
-            print("Restaurant found!")
             
-
-    
     #Dataframe laden:
     timeslot_bookings = pd.DataFrame(list(queryset))
-    print(timeslot_bookings)
-    if not timeslot_bookings.empty:
-        timeslot_bookings['time_slot'] = timeslot_bookings['date_time'].apply(get_time_slot)
-        average_bookings = timeslot_bookings.groupby('time_slot')['party_size'].mean().reset_index()
-        average_bookings = average_bookings[average_bookings['time_slot'] != 'no_category']
-        #Zweiten Dataframe laden, damit auch leere Uhrzeiten angezeigt werden:
-        all_time_slots = pd.DataFrame({
-        'time_slot': ['06-10 Uhr','10-12 Uhr', '13-15 Uhr', '16-17 Uhr', '18-19 Uhr', '20-22 Uhr','23-06 Uhr']
-        })
-        #Beide Dfs verbinden:
-        average_bookings_complete = pd.merge(
-        all_time_slots,
-        average_bookings,
-        on='time_slot',
-        how='left'
-        )
-        
-        #0 (Zahl) statt NaN einfügen:
-        average_bookings_complete['party_size'] = average_bookings_complete['party_size'].fillna(0)
+    if timeslot_bookings.empty:
+        noData('images/marketing/timeslot_graph.png', isCustom)
+        return
+    
+    timeslot_bookings['time_slot'] = timeslot_bookings['date_time'].apply(get_time_slot)
+    average_bookings = timeslot_bookings.groupby('time_slot')['party_size'].mean().reset_index()
+    average_bookings = average_bookings[average_bookings['time_slot'] != 'no_category']
+    #Zweiten Dataframe laden, damit auch leere Uhrzeiten angezeigt werden:
+    all_time_slots = pd.DataFrame({
+    'time_slot': ['06-10 Uhr','10-12 Uhr', '13-15 Uhr', '16-17 Uhr', '18-19 Uhr', '20-22 Uhr','23-06 Uhr']
+    })
+    #Beide Dfs verbinden:
+    average_bookings_complete = pd.merge(
+    all_time_slots,
+    average_bookings,
+    on='time_slot',
+    how='left'
+    )
+    
+    #0 (Zahl) statt NaN einfügen:
+    average_bookings_complete['party_size'] = average_bookings_complete['party_size'].fillna(0)
 
-        # Seaborn / Matplotlib:
-        sns.barplot(x='time_slot', y='party_size', data=average_bookings_complete)
-        plt.xlabel('Zeitfenster')
-        plt.ylabel('Durchschnittliche Buchungsanzahl')
+    # Seaborn / Matplotlib:
+    sns.barplot(x='time_slot', y='party_size', data=average_bookings_complete)
+    plt.xlabel('Zeitfenster')
+    plt.ylabel('Durchschnittliche Buchungsanzahl')
 
-        title = 'Durchschnittliche Buchungsanzahlen nach Zeitfenster'
-        if(isCustom):
-                d1 = start_datum.date()
-                d2 = end_datum.date()
-                title = 'Buchungen pro Zeitfenster vom ' + str(d1) + ' bis zum ' + str(d2) +'\n'
-                if location is not None and location != "":
-                    title = title + ' in ' + location
-                if givenRestaurant is not None and givenRestaurant != "":
-                    title = title + ' bei ' + givenRestaurant
+    title = 'Durchschnittliche Buchungsanzahlen nach Zeitfenster'
+    if(isCustom):
+            d1 = start_datum.date()
+            d2 = end_datum.date()
+            title = 'Buchungen pro Zeitfenster vom ' + str(d1) + ' bis zum ' + str(d2) +'\n'
+            if location is not None and location != "":
+                title = title + ' in ' + location
+            if givenRestaurant is not None and givenRestaurant != "":
+                title = title + ' bei ' + givenRestaurant
 
-        plt.title(title)
-        plt.xticks(rotation=45)
-        plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/timeslot_graph.png')
-        if(isCustom):
-                plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/custom.png')
-        checkFolderExisting(plot_path)
-        plt.tight_layout()
-        plt.savefig(plot_path)
-        plt.close()
-    else:
-        origin = os.path.join(settings.MEDIA_ROOT,'images/marketing/no_data.png')
-        print(settings.MEDIA_ROOT)
-        print(origin)
-        destination = os.path.join(settings.MEDIA_ROOT,'images/marketing/custom.png')
-        shutil.copy2(origin, destination)
+    plt.title(title)
+    plt.xticks(rotation=45)
+    plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/timeslot_graph.png')
+    if(isCustom):
+            plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/custom.png')
+    checkFolderExisting(plot_path)
+    plt.tight_layout()
+    plt.savefig(plot_path)
+    plt.close()
 
 def generateSeasonGraph():
     # Import:
     queryset = Reservation.objects.all().values('date_time', 'party_size')
-    print(queryset)
     reservation_data = pd.DataFrame(list(queryset))
-    print(reservation_data)
     reservation_data['season'] = reservation_data['date_time'].dt.date.apply(get_season)
-    print(reservation_data)
 
     # Durchschnitt berechnen:
     average_bookings_by_season = reservation_data.groupby('season')['party_size'].mean().reset_index()
@@ -256,10 +237,52 @@ def generateDiningPreferencePlot():
     plt.figure(figsize=(10, 6))
     sns.barplot(x='count', y='preference_label', data=preferenceFrameComplete)
     plt.xlabel('Häufigkeit')
-    plt.ylabel('Dining Preference')
-    plt.title('Häufigkeit der Dining Preferences')
+    plt.ylabel('Vorlieben')
+    plt.title('Beliebteste Küchen')
 
     plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/preference_plot.png')
+    checkFolderExisting(plot_path)
+    plt.tight_layout()
+    plt.savefig(plot_path)
+    plt.close()
+    
+def generateFeedbackPlot(givenRestaurant=None, isCustom=False):
+    # Import:
+    queryset = Feedback.objects.values('vote').annotate(count=Count('vote'))
+    
+    if givenRestaurant is not None and givenRestaurant != "":
+        queryset = queryset.filter(restaurant__name=givenRestaurant)
+        isCustom = True
+        
+    ratingFrame = pd.DataFrame(list(queryset))
+    
+    #Leeren DataFrame abfangen:
+    if ratingFrame.empty:
+        noData('images/marketing/feedback_plot.png',isCustom)
+        return
+    # Labels bestimmen und anpassen:
+    rating_labels = [label for _, label in Choices.VOTE_CHOICES]
+    rating_values = [value for value, _ in Choices.VOTE_CHOICES]
+    ratingFrame.columns = ['rating', 'count']
+    ratingFrame['rating_label'] = ratingFrame['rating'].apply(lambda x: dict(Choices.VOTE_CHOICES)[x])
+
+    # Merge-DataFrame:
+    dummyFrame = pd.DataFrame({'rating': rating_values, 'rating_label': rating_labels})
+    ratingFrameComplete = pd.merge(dummyFrame, ratingFrame, on='rating_label', how='left').fillna(0)
+    ratingFrameComplete = ratingFrameComplete.sort_values(by='rating_label', ascending=True)
+
+    # Seaborn Plot:
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x='rating_label', y='count', data=ratingFrameComplete)
+    plt.xlabel('Bewertung')
+    plt.ylabel('Häufigkeit')
+    title = 'Feedback nach Bewertung'
+    plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/feedback_plot.png')
+    if isCustom:
+        if (givenRestaurant is not None) and (givenRestaurant != ""):
+            title = title + ' bei ' + givenRestaurant
+        plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/custom.png')
+    plt.title(title)
     checkFolderExisting(plot_path)
     plt.tight_layout()
     plt.savefig(plot_path)
@@ -296,7 +319,6 @@ def get_season(date):
     year = date.year
     if not isinstance(date, pd.Timestamp):
         date = pd.Timestamp(date)
-        print("Großes Erfolg!")
     #Schaltjahre:
     feb_end = '02-29' if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else '02-28'
     seasons = {
@@ -310,3 +332,10 @@ def get_season(date):
         if date in date_range:
             return season
     return 'Unbekannt'  # Für den Fall, dass das Datum nicht zugeordnet werden kann (Schaltjahr beachten)
+
+def noData(path, isCustom=False):
+    origin = os.path.join(settings.MEDIA_ROOT,'images/marketing/no_data.png')
+    if isCustom:
+        path = 'images/marketing/custom.png'
+    destination = os.path.join(settings.MEDIA_ROOT,path)
+    shutil.copy2(origin, destination)

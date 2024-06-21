@@ -15,6 +15,7 @@ def customer_data_view(request):
     generateTimeslotGraph()
     generateDiningPreferencePlot()
     generateSeasonGraph()
+    generateFeedbackPlot()
     #Template anzeigen:++
     return render(request, 'marketing/customer_data.html')
 
@@ -35,7 +36,7 @@ def custom_data_input(request):
             if(statistik_typ == 'res_timeslot'):
                 generateTimeslotGraph(start=start,end=end,location=location,givenRestaurant=restaurant)
             if(statistik_typ == 'feedback'):
-                return None
+                generateFeedbackPlot(givenRestaurant=restaurant,isCustom=True)
             # Logik für die Datenverarbeitung je nach statistik_typ
             return render(request, 'marketing/custom_input.html', {'form': form,'image':True})
     else:

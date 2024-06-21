@@ -31,6 +31,11 @@
         <p> Beachten Sie, dass diese Daten für alle eingetragenen Restaurants gerechnet werden. </p>
         <img src="/media/images/marketing/season_graph.png" alt="Saison-Statistik" id="reservation_season">
     </div>   
+    <div class="statistic-item slide">
+        <h2>Feedback:</h2>
+        <p> Beachten Sie, dass diese Daten für alle eingetragenen Restaurants gerechnet werden. </p>
+        <img src="/media/images/marketing/feedback_plot.png" alt="Feedback-Statistik" id="feedback">
+    </div>  
 </div>
 <a class="prev" onclick="plusSlides(-1)">❮</a>
 <a class="next" onclick="plusSlides(1)">❯</a>    
@@ -55,6 +60,9 @@
 
             img = document.getElementById('reservation_season');
             img.src = '/media/images/marketing/season_graph.png?nocache=' + timestamp;
+
+            img = document.getElementById('feedback');
+            img.src = '/media/images/marketing/feedback_plot.png?nocache=' + timestamp;
           }
         var slideIndex = 1;
         function plusSlides(n) {
