@@ -23,7 +23,7 @@ def generateAgePlot():
     df = pd.DataFrame(list(query_set))
 
     # Gruppen erstellen:
-    altersgruppen = pd.cut(df['age'], bins=[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100], labels=['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71-80', '81-90', '91-100'])
+    altersgruppen = pd.cut(df['age'], bins=[-1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100], labels=['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71-80', '81-90', '91-100'])
 
     # Plot erzeugen
     plt.figure(figsize=(10, 6))
@@ -39,7 +39,7 @@ def generateAgePlot():
     plt.tight_layout()
     plt.close()
 
-def generateReservationGraph(location = None, start = None, end = None, givenRestaurant = None):
+def generateReservationGraph(location = None, start = None, end = None, givenRestaurant = None, givenSegment=None):
     isCustom = False
     if(start is not None):
         start_datum = datetime.datetime.combine(start, datetime.time())
@@ -54,10 +54,12 @@ def generateReservationGraph(location = None, start = None, end = None, givenRes
     else:
         end_datum = datetime.datetime.today()
     
+        
 
     # Erstellung einer Datumsreihe von start_datum bis end_datum
     datumsreihe = pd.date_range(start=start_datum, end=end_datum).date
     volle_datumsreihe_df = pd.DataFrame(datumsreihe, columns=['date'])
+    print(str(location)+str(start)+str(end)+str(givenRestaurant)+str(givenSegment))
 
     # Daten beschaffen. Ist eine location angegeben, wird diese ebenfalls gefiltert:
     if location is not None and location != "":
@@ -69,12 +71,21 @@ def generateReservationGraph(location = None, start = None, end = None, givenRes
     if givenRestaurant is not None and givenRestaurant != "":
         reservierungen = reservierungen.filter(restaurant__name__icontains=givenRestaurant)
         isCustom = True
-    
+    if (givenSegment is not None) and (givenSegment != ""):
+        segment = interpetSegment(givenSegment)
+        isCustom = True
+        try:
+            reservierungen = reservierungen.filter(customer__age__gte = segment[0], customer__age__lte = segment[1])
+            print(reservierungen)
+        except:
+            noData('images/marketing/feedback_plot.png',isCustom)
+            return 
     # Erstellen Sie ein DataFrame mit den Daten
     graph = pd.DataFrame(list(reservierungen.values('date_time', 'customer', 'restaurant', 'party_size', 'special_requests', 'status')))
     vollstaendiger_df = None #Variable im lokalen Kontext bekanntmachen
     if graph.empty:
-        noData('images/marketing/reservation_graph.png')
+        print("no data function called")
+        noData('images/marketing/reservation_graph.png', isCustom)
         return
     # Konvertieren Sie `date_time` zu nur einem Datum (ohne Zeit)
     graph['date'] = graph['date_time'].dt.date
@@ -100,6 +111,8 @@ def generateReservationGraph(location = None, start = None, end = None, givenRes
             title = title + ' in ' + location
         if givenRestaurant is not None and givenRestaurant != "":
             title = title + ' bei ' + givenRestaurant
+        if segment is not None:
+            title = title + '\nim Alterssegment ' + str(segment[0]) + ' bis ' + str(segment[1])
     plt.title(title)
     plt.xticks(rotation=45)  # Drehen Sie die Datumsbeschriftungen für bessere Lesbarkeit
 
@@ -116,7 +129,7 @@ def generateReservationGraph(location = None, start = None, end = None, givenRes
 
     
 
-def generateTimeslotGraph(location = None, start = None, end = None, givenRestaurant = None):
+def generateTimeslotGraph(location = None, start = None, end = None, givenRestaurant = None, givenSegment = None):
 
     isCustom = False
     if(start is not None):
@@ -140,6 +153,16 @@ def generateTimeslotGraph(location = None, start = None, end = None, givenRestau
             queryset = queryset.filter(date_time__range = (start_datum,end_datum), restaurant__location=location).order_by('date_time')
         if givenRestaurant is not None and givenRestaurant != "":
             queryset = queryset.filter(restaurant__name__icontains=givenRestaurant)
+    
+    if (givenSegment is not None) and (givenSegment != ""):
+        segment = interpetSegment(givenSegment)
+        isCustom = True
+        try:
+            queryset = queryset.filter(customer__age__gte = segment[0], customer__age__lte = segment[1])
+            print(queryset)
+        except:
+            noData('images/marketing/feedback_plot.png',isCustom)
+            return 
             
     #Dataframe laden:
     timeslot_bookings = pd.DataFrame(list(queryset))
@@ -179,6 +202,8 @@ def generateTimeslotGraph(location = None, start = None, end = None, givenRestau
                 title = title + ' in ' + location
             if givenRestaurant is not None and givenRestaurant != "":
                 title = title + ' bei ' + givenRestaurant
+            if(segment is not None):
+                title = title + '\nim Alterssegment von ' + str(segment[0]) + ' bis ' + str(segment[1])
 
     plt.title(title)
     plt.xticks(rotation=45)
@@ -246,14 +271,25 @@ def generateDiningPreferencePlot():
     plt.savefig(plot_path)
     plt.close()
     
-def generateFeedbackPlot(givenRestaurant=None, isCustom=False):
+def generateFeedbackPlot(givenRestaurant=None, isCustom=False, givenSegment = None):
     # Import:
-    queryset = Feedback.objects.values('vote').annotate(count=Count('vote'))
+    #queryset = Feedback.objects.values('vote','customer').annotate(count=Count('vote'))
+    queryset = Feedback.objects.all()
     
     if givenRestaurant is not None and givenRestaurant != "":
         queryset = queryset.filter(restaurant__name=givenRestaurant)
         isCustom = True
-        
+    
+    segment = interpetSegment(givenSegment)
+    if(segment is not None): 
+        isCustom = True
+        try:
+            queryset = queryset.filter(customer__age__gte = segment[0], customer__age__lte = segment[1])
+        except:
+            noData('images/marketing/feedback_plot.png',isCustom)
+            return 
+    queryset = queryset.values('vote').annotate(count=Count('vote'))
+    print(queryset)
     ratingFrame = pd.DataFrame(list(queryset))
     
     #Leeren DataFrame abfangen:
@@ -281,6 +317,8 @@ def generateFeedbackPlot(givenRestaurant=None, isCustom=False):
     if isCustom:
         if (givenRestaurant is not None) and (givenRestaurant != ""):
             title = title + ' bei ' + givenRestaurant
+        if segment is not None:
+            title = title + '\nin der Altersspanne ' + str(segment[0]) + " - " + str(segment[1])
         plot_path = os.path.join(settings.MEDIA_ROOT, 'images/marketing/custom.png')
     plt.title(title)
     checkFolderExisting(plot_path)
@@ -291,6 +329,15 @@ def generateFeedbackPlot(givenRestaurant=None, isCustom=False):
 #-----------------------------------------------------------------------------------------------------#
 #Interne Methoden:
 #-----------------------------------------------------------------------------------------------------#
+def interpetSegment(givenSegment):
+    if givenSegment is not None and givenSegment != "":
+        givenSegment.replace(" ","")
+        ageList = givenSegment.split('-')
+        if len(ageList) < 2:
+            ageList.append(ageList[0])
+        return ageList
+    else:
+        return None
 
 def checkFolderExisting(path):
     directory = os.path.dirname(path)

@@ -9,7 +9,8 @@ class StatistikForm(forms.Form):
         ('feedback', 'Feedback'),
     ]
     statistik_typ = forms.ChoiceField(choices=STATISTIK_AUSWAHL, label='Statistik Typ', required=True)
-    startdatum = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}), label='Startdatum', required=True)
+    startdatum = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}), label='Startdatum', required=False)
     enddatum = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}), label='Enddatum', required=False)
     location = forms.CharField(max_length=100, label='Ort', required=False)
     restaurant = forms.CharField(max_length=100, label='Restaurant', required=False)
+    segment = forms.CharField(max_length=100, label='Altersegment (z.b. 18 - 22)', required=False)

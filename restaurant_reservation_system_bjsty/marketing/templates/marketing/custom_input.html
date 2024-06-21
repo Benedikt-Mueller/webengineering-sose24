@@ -35,7 +35,7 @@
         var selectElement = document.getElementsByName('statistik_typ')[0];
         
         selectElement.addEventListener('change', function() {
-            var showHideElements = function(show,fields=['startdatum', 'enddatum', 'location', 'restaurant']) {
+            var showHideElements = function(show,fields=['startdatum', 'enddatum', 'location', 'restaurant','segment']) {
                 fields.forEach(function(field) {
                     var element = document.getElementsByName(field)[0];
                     if(show) {
@@ -51,11 +51,11 @@
                 // Versteckt die Felder
                 showHideElements(false);
             } else if (this.value === 'res_tag' || this.value === 'res_timeslot'){
-                var fields = ['startdatum', 'enddatum', 'location', 'restaurant'];
+                var fields = ['startdatum', 'enddatum', 'location', 'restaurant','segment'];
                 // Zeigt die Felder an
                 showHideElements(true, fields);
             } else if (this.value === 'feedback'){
-                var fields = ['restaurant'];
+                var fields = ['restaurant','segment'];
                 // Zeigt die Felder an
                 showHideElements(true, fields);
                 fields =['startdatum', 'enddatum', 'location'];

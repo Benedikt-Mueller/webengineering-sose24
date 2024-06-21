@@ -22,7 +22,6 @@ def customer_data_view(request):
 def custom_data_input(request):
     if request.method == 'POST':
         form = StatistikForm(request.POST)
-        print("hehe")
         if form.is_valid():
             # Verarbeiten Sie die Daten je nach ausgewählter Statistik
             statistik_typ = form.cleaned_data['statistik_typ']
@@ -30,13 +29,14 @@ def custom_data_input(request):
             end = form.cleaned_data['enddatum']
             location = form.cleaned_data['location']
             restaurant = form.cleaned_data['restaurant']
-            print("-------"+ statistik_typ + "---------")
+            segment = form.cleaned_data['segment']
+            print("-------"+ statistik_typ + "---------") #Nur Debug
             if(statistik_typ == 'res_tag'):
-                generateReservationGraph(start=start,end=end,location=location,givenRestaurant=restaurant)
+                generateReservationGraph(start=start,end=end,location=location,givenRestaurant=restaurant, givenSegment=segment)
             if(statistik_typ == 'res_timeslot'):
-                generateTimeslotGraph(start=start,end=end,location=location,givenRestaurant=restaurant)
+                generateTimeslotGraph(start=start,end=end,location=location,givenRestaurant=restaurant, givenSegment=segment)
             if(statistik_typ == 'feedback'):
-                generateFeedbackPlot(givenRestaurant=restaurant,isCustom=True)
+                generateFeedbackPlot(givenRestaurant=restaurant,isCustom=True,givenSegment=segment)
             # Logik für die Datenverarbeitung je nach statistik_typ
             return render(request, 'marketing/custom_input.html', {'form': form,'image':True})
     else:
